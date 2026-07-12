@@ -1220,15 +1220,15 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                 {/* Link Input Card */}
                 <div className="w-full max-w-3xl space-y-4">
                   {/* Selector Tabs & Extraction Mode Toggles */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#e4eaf0] p-2 border border-primary/20">
-                    <div className="flex items-center gap-1 bg-background/50 p-1 border border-primary/10 w-fit">
+                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#e4eaf0] dark:bg-surface-container p-2.5 border border-primary/25 shadow-[2px_2px_0px_rgba(27,34,44,0.05)] dark:shadow-[2px_2px_0px_rgba(255,255,255,0.02)]">
+                    <div className="flex items-center gap-1 bg-background/60 dark:bg-surface-lowest p-1.5 border border-primary/10 w-fit">
                       <button
                         type="button"
                         onClick={() => setUrlInputMode("single")}
                         className={`px-4 py-2 text-[10px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none ${
                           urlInputMode === "single"
-                            ? "bg-primary text-on-primary font-black shadow-[2px_2px_0px_#1b222c]"
-                            : "text-on-surface-variant/80 hover:text-primary"
+                            ? "bg-primary text-on-primary font-black shadow-[2px_2px_0px_#1b222c] dark:shadow-[2px_2px_0px_#ffffff]"
+                            : "text-on-surface-variant/80 hover:text-primary dark:text-on-surface-variant/70 dark:hover:text-primary"
                         }`}
                       >
                         Single Target
@@ -1238,16 +1238,16 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                         onClick={() => setUrlInputMode("bulk")}
                         className={`px-4 py-2 text-[10px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none ${
                           urlInputMode === "bulk"
-                            ? "bg-primary text-on-primary font-black shadow-[2px_2px_0px_#1b222c]"
-                            : "text-on-surface-variant/80 hover:text-primary"
+                            ? "bg-primary text-on-primary font-black shadow-[2px_2px_0px_#1b222c] dark:shadow-[2px_2px_0px_#ffffff]"
+                            : "text-on-surface-variant/80 hover:text-primary dark:text-on-surface-variant/70 dark:hover:text-primary"
                         }`}
                       >
                         Bulk Queue
                       </button>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-1.5 bg-[#e4e2f2]/60 dark:bg-[#101738]/60 p-1.5 border border-primary/20 w-fit">
-                      <span className="text-[9px] font-mono font-bold text-primary/70 uppercase px-2 flex items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-1.5 bg-[#dcd9f0] dark:bg-surface-lowest p-1.5 border border-primary/20 w-fit">
+                      <span className="text-[9px] font-mono font-bold text-primary/70 dark:text-primary/90 uppercase px-2 flex items-center gap-1">
                         <Sparkles className="w-3 h-3 text-secondary animate-pulse" />
                         <span>PRO EXTRACTIONS:</span>
                       </span>
@@ -1256,8 +1256,8 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                         onClick={() => setExtractionMode("media")}
                         className={`px-3.5 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none flex items-center gap-1.5 ${
                           extractionMode === "media"
-                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black shadow-[2px_2px_0px_#1b222c] border border-blue-400"
-                            : "text-on-surface-variant hover:text-blue-600 dark:hover:text-blue-400 bg-background/40 hover:bg-background/80"
+                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black shadow-[2px_2px_0px_#1b222c] dark:shadow-[2px_2px_0px_rgba(255,255,255,0.4)] border border-blue-400"
+                            : "text-on-surface-variant hover:text-blue-600 dark:hover:text-blue-400 bg-background dark:bg-surface-container hover:bg-[#faf9ff] dark:hover:bg-surface-container-high border border-primary/10"
                         }`}
                       >
                         <FileVideo className="w-3.5 h-3.5" />
@@ -1269,8 +1269,8 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                         onClick={() => setExtractionMode("photo")}
                         className={`px-3.5 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none flex items-center gap-1.5 ${
                           extractionMode === "photo"
-                            ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black shadow-[2px_2px_0px_#1b222c] border border-emerald-400"
-                            : "text-on-surface-variant hover:text-emerald-600 dark:hover:text-emerald-400 bg-background/40 hover:bg-background/80"
+                            ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black shadow-[2px_2px_0px_#1b222c] dark:shadow-[2px_2px_0px_rgba(255,255,255,0.4)] border border-emerald-400"
+                            : "text-on-surface-variant hover:text-emerald-600 dark:hover:text-emerald-400 bg-background dark:bg-surface-container hover:bg-[#faf9ff] dark:hover:bg-surface-container-high border border-primary/10"
                         }`}
                       >
                         <FileImage className="w-3.5 h-3.5" />
@@ -1282,8 +1282,8 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                         onClick={() => setExtractionMode("post")}
                         className={`px-3.5 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none flex items-center gap-1.5 ${
                           extractionMode === "post"
-                            ? "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white font-black shadow-[2px_2px_0px_#1b222c] border border-pink-400"
-                            : "text-on-surface-variant hover:text-fuchsia-600 dark:hover:text-fuchsia-400 bg-background/40 hover:bg-background/80"
+                            ? "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white font-black shadow-[2px_2px_0px_#1b222c] dark:shadow-[2px_2px_0px_rgba(255,255,255,0.4)] border border-pink-400"
+                            : "text-on-surface-variant hover:text-fuchsia-600 dark:hover:text-fuchsia-400 bg-background dark:bg-surface-container hover:bg-[#faf9ff] dark:hover:bg-surface-container-high border border-primary/10"
                         }`}
                       >
                         <FileText className="w-3.5 h-3.5" />
@@ -1296,7 +1296,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                   {urlInputMode === "single" ? (
                     <form 
                       onSubmit={handleExtract}
-                      className="bg-[#e4eaf0] border border-primary p-3 shadow-[6px_6px_0px_#1b222c] transition-all duration-300"
+                      className="bg-[#e4eaf0] dark:bg-surface-container border border-primary p-3 shadow-[6px_6px_0px_#1b222c] dark:shadow-[6px_6px_0px_rgba(255,255,255,0.15)] transition-all duration-300"
                     >
                       <div className="flex flex-col lg:flex-row gap-3 items-stretch">
                         <div className="relative w-full flex-grow">
@@ -1368,7 +1368,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                   ) : (
                     <form 
                       onSubmit={handleBulkExtractSubmit}
-                      className="bg-[#e4eaf0] border border-primary p-4 shadow-[6px_6px_0px_#1b222c] transition-all duration-300 space-y-3"
+                      className="bg-[#e4eaf0] dark:bg-surface-container border border-primary p-4 shadow-[6px_6px_0px_#1b222c] dark:shadow-[6px_6px_0px_rgba(255,255,255,0.15)] transition-all duration-300 space-y-3"
                     >
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary block">
@@ -1416,7 +1416,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
                 {/* Live Bulk Extraction Queue summary */}
                 {queue.length > 0 && (
-                  <div className="w-full max-w-3xl bg-[#e4eaf0] border border-primary p-6 shadow-[6px_6px_0px_#1b222c] space-y-4">
+                  <div className="w-full max-w-3xl bg-[#e4eaf0] dark:bg-surface-container border border-primary p-6 shadow-[6px_6px_0px_#1b222c] dark:shadow-[6px_6px_0px_rgba(255,255,255,0.15)] space-y-4">
                     <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-primary/20 pb-3 gap-3">
                       <div className="space-y-1.5">
                         <div className="flex items-center gap-2">
@@ -1774,7 +1774,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                 {/* Feature Bento Cards Grid */}
                 <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
                   {/* Card 1 */}
-                  <div className="bg-[#e4eaf0] border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-10 h-10 bg-background border border-outline flex items-center justify-center text-secondary">
                         <Volume2 className="w-4 h-4" />
@@ -1788,7 +1788,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                   </div>
 
                   {/* Card 2 */}
-                  <div className="bg-[#e4eaf0] border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-10 h-10 bg-background border border-outline flex items-center justify-center text-secondary">
                         <Tv className="w-4 h-4" />
@@ -1802,7 +1802,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                   </div>
 
                   {/* Card 3 */}
-                  <div className="bg-[#e4eaf0] border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-10 h-10 bg-background border border-outline flex items-center justify-center text-secondary">
                         <Zap className="w-4 h-4" />
@@ -1816,7 +1816,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                   </div>
 
                   {/* Card 4 */}
-                  <div className="bg-[#e4eaf0] border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-outline p-6 rounded-none relative overflow-hidden group hover:border-primary transition-all duration-300">
                     <div className="flex justify-between items-start mb-6">
                       <div className="w-10 h-10 bg-background border border-outline flex items-center justify-center text-secondary">
                         <ShieldCheck className="w-4 h-4" />
@@ -1850,7 +1850,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
                 {/* History Items List */}
                 {history.length === 0 ? (
-                  <div className="bg-[#e4eaf0] border border-dashed border-primary/30 p-12 text-center rounded-none space-y-4">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-dashed border-primary/30 p-12 text-center rounded-none space-y-4">
                     <div className="flex justify-center">
                       <History className="w-10 h-10 text-on-surface-variant/30 animate-pulse" />
                     </div>
@@ -1867,7 +1867,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                       <div
                         key={item.id}
                         onClick={() => handleLoadHistoryItem(item)}
-                        className="bg-[#e4eaf0] border border-primary p-4 shadow-[4px_4px_0px_#1b222c] flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-[6px_6px_0px_#1b222c] hover:bg-surface-container transition-all cursor-pointer rounded-none group"
+                        className="bg-[#e4eaf0] dark:bg-surface-container border border-primary p-4 shadow-[4px_4px_0px_#1b222c] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.15)] flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-[6px_6px_0px_#1b222c] hover:bg-surface-container-high transition-all cursor-pointer rounded-none group"
                       >
                         <div className="flex items-center gap-4 w-full md:w-3/4">
                           <div className="w-20 h-12 bg-neutral-900 border border-primary overflow-hidden relative flex-shrink-0">
@@ -1975,7 +1975,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
             </div>
 
             {/* Video Info Panel Card */}
-            <div className="bg-[#e4eaf0] rounded-none p-6 flex flex-col md:flex-row gap-8 items-stretch border border-primary">
+            <div className="bg-[#e4eaf0] dark:bg-surface-container rounded-none p-6 flex flex-col md:flex-row gap-8 items-stretch border border-primary">
               <div className="w-full md:w-1/3 aspect-video rounded-none overflow-hidden relative border border-primary bg-background flex-shrink-0">
                 <img 
                   alt={extractedData.title} 
@@ -2063,7 +2063,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
               } gap-6`}>
                 {/* Video Checkbox Panel */}
                 {extractionMode === "media" && (
-                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
                         <FileVideo className="text-secondary w-4 h-4" />
@@ -2169,7 +2169,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
                 {/* Audio Checkbox Panel */}
                 {extractionMode === "media" && (
-                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
                         <Music className="text-secondary w-4 h-4" />
@@ -2218,7 +2218,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
                 {/* Photo Downloader Panel */}
                 {extractionMode === "photo" && (
-                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
                         <FileImage className="text-secondary w-4 h-4" />
@@ -2279,7 +2279,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
                 {/* Post Narrative Downloader Panel */}
                 {extractionMode === "post" && (
-                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                  <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
                         <FileText className="text-secondary w-4 h-4" />
@@ -2341,7 +2341,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
             {/* Operating System Compatibility & Native Preset Selector */}
             {status === "results" && extractionMode === "media" && (
-              <div className="bg-[#e4eaf0] border border-primary p-6 mt-6 shadow-[4px_4px_0px_rgba(26,26,26,0.15)] text-left">
+              <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary p-6 mt-6 shadow-[4px_4px_0px_rgba(26,26,26,0.15)] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.05)] text-left">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-primary/20 pb-4 mb-4">
                   <div>
                     <h3 className="font-serif font-bold text-lg text-primary uppercase tracking-tight flex items-center gap-2">
@@ -2429,7 +2429,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
             {/* Action State: Idle Results vs Downloading Progress vs Completed Success */}
             {status === "results" && (
-              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6 bg-[#e4eaf0] p-4 border border-primary">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-6 bg-[#e4eaf0] dark:bg-surface-container p-4 border border-primary">
                 {/* Auto-copy toggle */}
                 <label className="flex items-center gap-3 cursor-pointer select-none group w-full sm:w-auto">
                   <div className="relative">

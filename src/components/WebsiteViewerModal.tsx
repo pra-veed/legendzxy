@@ -110,7 +110,7 @@ export default function WebsiteViewerModal({ url, onClose }: WebsiteViewerModalP
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ type: "spring", stiffness: 380, damping: 30 }}
-        className="w-full max-w-5xl h-[85vh] bg-[#e4eaf0] border border-primary flex flex-col shadow-[12px_12px_0px_rgba(26,26,26,0.35)] overflow-hidden rounded-none"
+        className="w-full max-w-5xl h-[85vh] bg-[#e4eaf0] dark:bg-surface-container border border-primary flex flex-col shadow-[12px_12px_0px_rgba(26,26,26,0.35)] dark:shadow-[12px_12px_0px_rgba(255,255,255,0.05)] overflow-hidden rounded-none"
       >
           {/* Mac / Premium style Browser Tab bar */}
           <div 

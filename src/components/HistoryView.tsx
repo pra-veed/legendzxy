@@ -540,7 +540,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
         </AnimatePresence>
         
         {/* Filters and Utility bar */}
-        <div className="bg-[#e4eaf0] border border-primary p-4 shadow-[4px_4px_0px_#1b222c] flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary p-4 shadow-[4px_4px_0px_#1b222c] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.15)] flex flex-col sm:flex-row justify-between items-center gap-4">
           
           {/* Search Box */}
           <div className="relative w-full sm:max-w-md">
@@ -619,7 +619,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="bg-[#e4eaf0] border border-primary p-4 shadow-[4px_4px_0px_#1b222c] flex flex-col justify-between gap-4 hover:shadow-[6px_6px_0px_#1b222c] hover:bg-surface-container transition-all rounded-none group relative"
+                  className="bg-[#e4eaf0] dark:bg-surface-container border border-primary p-4 shadow-[4px_4px_0px_#1b222c] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.15)] flex flex-col justify-between gap-4 hover:shadow-[6px_6px_0px_#1b222c] hover:bg-surface-container-high transition-all rounded-none group relative"
                 >
                   <div className="flex gap-4 items-start">
                     {/* Video Thumbnail block */}

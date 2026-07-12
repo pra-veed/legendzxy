@@ -35,7 +35,7 @@ export default function QualityView() {
       <section className="grid grid-cols-1 md:grid-cols-12 gap-6 relative z-10">
         
         {/* Lossless Audio Card */}
-        <div className="md:col-span-7 bg-[#e4eaf0] border border-primary rounded-none p-6 md:p-8 flex flex-col relative overflow-hidden group shadow-[4px_4px_0px_rgba(26,26,26,0.15)]">
+        <div className="md:col-span-7 bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 md:p-8 flex flex-col relative overflow-hidden group shadow-[4px_4px_0px_rgba(26,26,26,0.15)] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.05)]">
           <div className="flex items-center gap-3 mb-6 relative z-10">
             <div className="p-2 bg-background border border-primary text-secondary">
               <Music className="w-5 h-5" />
@@ -70,7 +70,7 @@ export default function QualityView() {
         </div>
 
         {/* Video Neural Card */}
-        <div className="md:col-span-5 bg-[#e4eaf0] border border-primary rounded-none p-6 md:p-8 flex flex-col relative overflow-hidden group shadow-[4px_4px_0px_#4f5e7c]">
+        <div className="md:col-span-5 bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 md:p-8 flex flex-col relative overflow-hidden group shadow-[4px_4px_0px_#4f5e7c] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.05)]">
           <div className="flex items-center gap-3 mb-6 relative z-10">
             <div className="p-2 bg-background border border-primary text-secondary">
               <Tv className="w-5 h-5" />
@@ -101,7 +101,7 @@ export default function QualityView() {
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4">
         
         {/* Tech Stack (Quantum Extraction Engine) */}
-        <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 md:p-8 flex flex-col justify-center gap-4 shadow-[4px_4px_0px_rgba(26,26,26,0.1)]">
+        <div className="bg-[#e4eaf0] dark:bg-surface-container border border-primary rounded-none p-6 md:p-8 flex flex-col justify-center gap-4 shadow-[4px_4px_0px_rgba(26,26,26,0.1)] dark:shadow-[4px_4px_0px_rgba(255,255,255,0.05)]">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-background border border-primary text-secondary">
               <Cpu className="w-5 h-5" />
