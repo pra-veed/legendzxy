@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, ThinkingLevel, Modality, GenerateVideosOperation } from "@google/genai";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
@@ -1015,13 +1014,17 @@ This is an incredible high-fidelity demonstration of creative development. The v
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
-    createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    }).then((vite) => {
-      app.use(vite.middlewares);
+    import("vite").then(({ createServer: createViteServer }) => {
+      createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      }).then((vite) => {
+        app.use(vite.middlewares);
+      }).catch((err) => {
+        console.error("Vite dev server initialization failed:", err);
+      });
     }).catch((err) => {
-      console.error("Vite dev server initialization failed:", err);
+      console.error("Vite dynamic import failed:", err);
     });
   } else {
     const distPath = path.join(process.cwd(), 'dist');
