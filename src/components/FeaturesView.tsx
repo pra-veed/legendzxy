@@ -705,7 +705,7 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
     e.preventDefault();
     const sanitizedUrl = ensureProtocol(url);
     if (!sanitizedUrl) {
-      setErrorMsg("Please enter a valid YouTube, Facebook, or Instagram URL.");
+      setErrorMsg("Please enter a valid YouTube, Facebook, or Instagram URL (or other supported platform links).");
       return;
     }
     setUrl(sanitizedUrl);
@@ -1244,10 +1244,10 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                             required
                             placeholder={
                               extractionMode === "post"
-                                ? "Paste LinkedIn, X/Twitter, Pinterest, Facebook, or Instagram post URL here..."
+                                ? "Paste YouTube, Facebook, Instagram, LinkedIn, X/Twitter, or Pinterest URL here to extract post content..."
                                 : extractionMode === "photo"
-                                ? "Paste video or post URL to extract its cover photo/thumbnail..."
-                                : "Paste YouTube, Facebook, or Instagram video URL here..."
+                                ? "Paste YouTube, Facebook, Instagram, or any video/post URL here to extract its cover photo/thumbnail..."
+                                : "Paste YouTube, Facebook, or Instagram URL here to extract video & audio..."
                             }
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
