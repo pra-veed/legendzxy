@@ -1,116 +1,53 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!--
+    Extractile - Premium Monochrome Favicon
+    Specifically optimized for high visibility, legibility, and high-end aesthetic appeal
+    on both dark and light browser tabs. Completely monochrome, avoiding any colors.
+  -->
   <defs>
-    <!-- Background Gradient -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#070c20" />
-      <stop offset="50%" stop-color="#0a102b" />
-      <stop offset="100%" stop-color="#141c44" />
+    <!-- Ultra-deep premium dark background gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#14151a" />
+      <stop offset="100%" stop-color="#08090b" />
+    </radialGradient>
+
+    <!-- Premium metallic silver gradient for the "E" emblem -->
+    <linearGradient id="silverEmblem" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#e2e5e9" />
     </linearGradient>
 
-    <!-- Border Glow Gradient -->
-    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#a5b4fc" stop-opacity="0.8" />
-      <stop offset="40%" stop-color="#4f5e7c" stop-opacity="0.2" />
-      <stop offset="100%" stop-color="#7c634c" stop-opacity="0.8" />
-    </linearGradient>
-
-    <!-- Prism face gradients (high fidelity slate & indigo) -->
-    <linearGradient id="prismLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b" />
-      <stop offset="100%" stop-color="#334155" />
-    </linearGradient>
-    <linearGradient id="prismRight" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e1b4b" />
-      <stop offset="100%" stop-color="#312e81" />
-    </linearGradient>
-
-    <!-- Glow & Beam gradients -->
-    <linearGradient id="laserGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="#3b82f6" />
-      <stop offset="60%" stop-color="#a5b4fc" />
-      <stop offset="100%" stop-color="#ffffff" />
-    </linearGradient>
-
-    <!-- Gold Accent gradient for valuable extracted bits -->
-    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fef08a" />
-      <stop offset="50%" stop-color="#eab308" />
-      <stop offset="100%" stop-color="#ca8a04" />
-    </linearGradient>
-
-    <!-- Glow filters for high aesthetic fidelity -->
-    <filter id="neonGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="15" result="blur1" />
-      <feGaussianBlur stdDeviation="25" result="blur2" />
-      <feMerge>
-        <feMergeNode in="blur2" />
-        <feMergeNode in="blur1" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-
-    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="8" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <!-- Subtle drop shadow to give the monogram depth -->
+    <filter id="monogramShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.6" />
     </filter>
   </defs>
 
-  <!-- Base Card Canvas -->
-  <rect width="512" height="512" rx="120" fill="url(#bgGrad)" />
-  <rect x="20" y="20" width="472" height="472" rx="100" fill="none" stroke="url(#borderGrad)" stroke-width="6" />
+  <!-- 1. Deep Squircle Base Frame with high-contrast border -->
+  <rect width="512" height="512" rx="156" fill="url(#bgGrad)" />
+  <!-- High contrast outer bezel that ensures visibility on dark-themed browser tabs -->
+  <rect x="8" y="8" width="496" height="496" rx="148" fill="none" stroke="#2d3139" stroke-width="16" />
+  <!-- Inner crisp highlight ring -->
+  <rect x="24" y="24" width="464" height="464" rx="132" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.1" />
 
-  <!-- Background decorative grid / signal lines -->
-  <g opacity="0.12" stroke="#a5b4fc" stroke-width="1.5">
-    <line x1="256" y1="20" x2="256" y2="492" />
-    <line x1="20" y1="256" x2="492" y2="256" />
-    <circle cx="256" cy="256" r="180" fill="none" stroke-dasharray="10 12" />
-    <circle cx="256" cy="256" r="230" fill="none" />
+  <!-- 2. "Extractile" Monogram Emblem (The Sleek "E" with Integrated Extraction Chevron) -->
+  <g filter="url(#monogramShadow)" fill="url(#silverEmblem)">
+    <!-- Vertical Backbone / Stem -->
+    <rect x="136" y="130" width="64" height="252" rx="8" />
+
+    <!-- Top Horizontal bar -->
+    <rect x="200" y="130" width="176" height="60" rx="8" />
+
+    <!-- Middle Extraction Chevron (The interactive center focal point) -->
+    <path d="M 194,226 L 302,226 L 338,256 L 302,286 L 194,286 Z" />
+
+    <!-- Bottom Horizontal bar -->
+    <rect x="200" y="322" width="176" height="60" rx="8" />
   </g>
 
-  <!-- Main Isometric Extraction Chamber -->
-  <g id="extraction-chamber">
-    <!-- Left Isometric face of the base chamber -->
-    <path d="M 160 260 L 256 312 L 256 420 L 160 368 Z" fill="url(#prismLeft)" />
-    <!-- Right Isometric face of the base chamber -->
-    <path d="M 256 312 L 352 260 L 352 368 L 256 420 Z" fill="url(#prismRight)" />
-    
-    <!-- Outer rim/lip of the extraction chamber -->
-    <path d="M 160 260 L 256 208 L 352 260 L 256 312 Z" fill="#0f172a" stroke="#475569" stroke-width="3" />
-    <!-- Recessed open top where beam emerges -->
-    <path d="M 180 260 L 256 218 L 332 260 L 256 302 Z" fill="#020617" stroke="#6366f1" stroke-width="1.5" />
-  </g>
-
-  <!-- Glowing Signal loops (extracted frequencies) expanding out -->
-  <g fill="none">
-    <ellipse cx="256" cy="190" rx="110" ry="42" stroke="#a5b4fc" stroke-width="2" stroke-dasharray="12 18" opacity="0.35" />
-    <ellipse cx="256" cy="140" rx="75" ry="28" stroke="#a5b4fc" stroke-width="3" stroke-dasharray="8 10" opacity="0.6" filter="url(#softGlow)" />
-    <ellipse cx="256" cy="100" rx="45" ry="16" stroke="#ffffff" stroke-width="2.5" opacity="0.8" />
-  </g>
-
-  <!-- Central Laser-Sharp Extraction Beam -->
-  <g filter="url(#neonGlow)">
-    <!-- Outer core glow -->
-    <line x1="256" y1="285" x2="256" y2="90" stroke="#3b82f6" stroke-width="20" stroke-linecap="round" opacity="0.4" />
-    <!-- Inner hot core -->
-    <line x1="256" y1="280" x2="256" y2="85" stroke="url(#laserGrad)" stroke-width="10" stroke-linecap="round" />
-  </g>
-
-  <!-- Extracted Value / Golden Metadata Nugget (Focal Point) -->
-  <circle cx="256" cy="75" r="18" fill="url(#goldAccent)" filter="url(#neonGlow)" />
-  <circle cx="256" cy="75" r="10" fill="#ffffff" />
-
-  <!-- Surrounding high-fidelity metadata bits (floating logs/traces) -->
-  <!-- Left accent cluster -->
-  <circle cx="110" cy="200" r="10" fill="url(#goldAccent)" opacity="0.85" filter="url(#softGlow)" />
-  <line x1="110" y1="200" x2="135" y2="200" stroke="#fef08a" stroke-width="2" opacity="0.5" />
-  <circle cx="130" cy="150" r="5" fill="#a5b4fc" opacity="0.6" />
-  
-  <!-- Right accent cluster -->
-  <circle cx="402" cy="200" r="8" fill="#a5b4fc" opacity="0.9" filter="url(#softGlow)" />
-  <line x1="402" y1="200" x2="377" y2="200" stroke="#a5b4fc" stroke-width="2" opacity="0.5" />
-  <circle cx="382" cy="150" r="6" fill="url(#goldAccent)" opacity="0.8" />
-
-  <!-- Technical hairline ticks & crosshairs -->
-  <path d="M 246 75 L 266 75 M 256 65 L 256 85" stroke="#ffffff" stroke-width="1.5" opacity="0.7" />
-  <path d="M 150 255 L 170 265 M 342 265 L 362 255" stroke="#475569" stroke-width="2" />
+  <!-- 3. Minimal Precision Grid Accents (Highlights craftsmanship) -->
+  <circle cx="256" cy="48" r="4" fill="#ffffff" opacity="0.3" />
+  <circle cx="256" cy="464" r="4" fill="#ffffff" opacity="0.3" />
+  <circle cx="48" cy="256" r="4" fill="#ffffff" opacity="0.3" />
+  <circle cx="464" cy="256" r="4" fill="#ffffff" opacity="0.3" />
 </svg>
