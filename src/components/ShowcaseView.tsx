@@ -266,8 +266,37 @@ const EXTRA_UNSPLASH_IDS = [
   "photo-1551269901-5c5e14c25df7", // workspace loft setup
   "photo-1567095761054-7a02e69e5c43", // abstract gold paint
   "photo-1579783902614-a3fb3927b6a5", // vintage flowers retro
-  "photo-1513829096960-ef229e5230ab", // tokyo neon
-  "photo-1524169358666-79f22534bc67"  // colorful glass abstract
+  "photo-1508138221679-760a23a2285b", // misty woods and aurora
+  "photo-1511512578047-dfb367046420", // glowing neon arcade room
+  "photo-1516321318423-f06f85e504b3", // corporate tech digital
+  "photo-1531297484001-80022131f5a1", // neon abstract lines
+  "photo-1548345680-f5475ea5df84", // red blue gradient fluid
+  "photo-1563986768609-322da13575f3", // abstract web design/cyberpunk graphics
+  "photo-1518770660439-4636190af475", // quantum processor glow
+  "photo-1562813733-b31f71025d54", // developer night workstation
+  "photo-1555066931-4365d14bab8c", // modern vscode editor code
+  "photo-1542831371-29b0f74f9713", // server room blinking lights
+  "photo-1454789548928-9efd52dc4031", // deep nebulas constellation
+  "photo-1506744038136-46273834b3fb", // pink canyon horizon
+  "photo-1534796636912-3b95b3ab5986", // mountains and aurora
+  "photo-1507525428034-b723cf961d3e", // sunset seashore line
+  "photo-1470071459604-3b5ec3a7fe05", // emerald deep forest
+  "photo-1441974231531-c6227db76b6e", // rays in foggy forest
+  "photo-1472214222541-d510753a49fa", // lavender fields retro sun
+  "photo-1486572788966-cfd3df1f5b42", // pixel arcade console
+  "photo-1501854140801-50d01698950b", // rolling landscape green hills
+  "photo-1492684223066-81342ee5ff30", // bokeh retro concert lights
+  "photo-1536440136628-849c177e76a1", // movie theatre signage
+  "photo-1522071820081-009f0129c71c", // corporate group discussion
+  "photo-1511556532299-8f662fc26c06", // neon art gallery
+  "photo-1554188248-986adbb73be4", // colorful abstract vector wave
+  "photo-1502239608882-93b729c6af43", // ambient party neon lights
+  "photo-1563245372-f21724e3856d", // cyberpunk retro grid cityscape
+  "photo-1508921912186-1d1a45ebb3c1", // magenta retro sky lighting
+  "photo-1516450360452-9312f5e86fc7", // retro synth music party stage
+  "photo-1574169208507-84376144848b", // 3D colorful fluid movement
+  "photo-1553356084-58ef4a67b2a7", // abstract liquid paint explosion
+  "photo-1517694712202-14dd9538aa97"  // neon developer typing on keyboard
 ];
 
 const generateUniquePin = (id: number, targetCategory?: string): Pin => {
