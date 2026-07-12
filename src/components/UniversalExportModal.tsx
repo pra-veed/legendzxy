@@ -29,6 +29,7 @@ interface UniversalExportModalProps {
   imageUrl?: string; // Optional image URL for preview/saving
   type: "video" | "photo" | "post" | "ai_lab";
   onTriggerAlert?: (title: string, message: string) => void;
+  reportContent?: string; // Optional spec report text to download separately
 }
 
 export default function UniversalExportModal({
@@ -40,7 +41,8 @@ export default function UniversalExportModal({
   content,
   imageUrl,
   type,
-  onTriggerAlert
+  onTriggerAlert,
+  reportContent
 }: UniversalExportModalProps) {
   const [copied, setCopied] = useState(false);
   const [shareSupported, setShareSupported] = useState(false);
@@ -71,9 +73,25 @@ export default function UniversalExportModal({
   const handleDownload = () => {
     try {
       let urlBlob = "";
-      if (type === "photo" && imageUrl) {
-        // For photos, if we have imageUrl we can download it
-        urlBlob = imageUrl;
+      const isUrl = typeof content === "string" && (
+        content.startsWith("http://") || 
+        content.startsWith("https://") || 
+        content.startsWith("blob:") || 
+        content.startsWith("data:")
+      );
+
+      if (isUrl) {
+        if (content.startsWith("http://") || content.startsWith("https://")) {
+          urlBlob = `/api/download-proxy?url=${encodeURIComponent(content)}&filename=${encodeURIComponent(filename)}`;
+        } else {
+          urlBlob = content;
+        }
+      } else if (type === "photo" && imageUrl) {
+        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+          urlBlob = `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(filename)}`;
+        } else {
+          urlBlob = imageUrl;
+        }
       } else {
         const blob = new Blob([content], { type: mimeType });
         urlBlob = URL.createObjectURL(blob);
@@ -92,7 +110,7 @@ export default function UniversalExportModal({
       link.click();
       document.body.removeChild(link);
 
-      if (type !== "photo" && !imageUrl) {
+      if (!isUrl && !(type === "photo" && imageUrl)) {
         URL.revokeObjectURL(urlBlob);
       }
 
@@ -101,6 +119,26 @@ export default function UniversalExportModal({
       console.error("Standard download failed:", err);
       // Fallback
       window.open(imageUrl || content, "_blank");
+    }
+  };
+
+  // Download companion report
+  const handleDownloadReport = () => {
+    if (!reportContent) return;
+    try {
+      const blob = new Blob([reportContent], { type: "text/plain;charset=utf-8" });
+      const urlBlob = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = urlBlob;
+      const reportName = filename.substring(0, filename.lastIndexOf('.')) + "-spec-report.txt";
+      link.download = reportName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(urlBlob);
+      onTriggerAlert?.("Report Exported", `Successfully downloaded archival spec report ${reportName}.`);
+    } catch (err) {
+      console.error("Report download failed:", err);
     }
   };
 
@@ -309,6 +347,15 @@ export default function UniversalExportModal({
                 <Download className="w-4 h-4 text-secondary" /> DIRECT DOWNLOAD FILE
               </button>
             </div>
+
+            {reportContent && (
+              <button
+                onClick={handleDownloadReport}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-background text-primary font-bold text-xs tracking-widest uppercase hover:bg-primary/5 border border-primary cursor-pointer transition-all hover:shadow-[2px_2px_0px_#1b222c] font-mono mt-1"
+              >
+                <FileText className="w-4.5 h-4.5 text-secondary" /> DOWNLOAD COMPANION SPEC REPORT (TXT)
+              </button>
+            )}
 
             {/* Secondary Action Link Buttons (Fallback for strict browser environments) */}
             <div className="flex flex-wrap items-center justify-between gap-2 bg-primary/5 p-3 border border-primary/10">

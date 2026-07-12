@@ -844,6 +844,36 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
     }
   });
 
+  // Download Proxy endpoint to bypass CORS and download real media files
+  app.get("/api/download-proxy", async (req, res) => {
+    try {
+      const { url, filename } = req.query;
+      if (!url || typeof url !== "string") {
+        return res.status(400).send("URL parameter is required");
+      }
+
+      console.log(`[PROXY] Requesting remote download for: ${url}`);
+      const response = await fetch(url);
+      if (!response.ok) {
+        return res.status(response.status).send(`Failed to fetch remote asset: ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get("content-type") || "application/octet-stream";
+      res.setHeader("Content-Type", contentType);
+
+      if (filename && typeof filename === "string") {
+        const safeFilename = encodeURIComponent(filename);
+        res.setHeader("Content-Disposition", `attachment; filename="${safeFilename}"; filename*=UTF-8''${safeFilename}`);
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      res.send(Buffer.from(arrayBuffer));
+    } catch (err: any) {
+      console.error("Download proxy error:", err);
+      res.status(500).send(`Download proxy failed: ${err.message}`);
+    }
+  });
+
   // Feedback Submission API route
   app.post("/api/feedback", async (req, res) => {
     try {

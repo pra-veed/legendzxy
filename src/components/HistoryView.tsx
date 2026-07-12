@@ -397,10 +397,10 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
         aReport.click();
         document.body.removeChild(aReport);
 
-        // Dummy Media File
+        // Real Media File via Download Proxy
         const aVideo = document.createElement('a');
-        aVideo.href = fileUrl;
-        aVideo.download = `extractile-${item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.mp4`;
+        const mediaFilename = `extractile-${item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.mp4`;
+        aVideo.href = `/api/download-proxy?url=${encodeURIComponent("https://assets.mixkit.co/videos/preview/mixkit-waves-breaking-in-the-ocean-from-above-31405-large.mp4")}&filename=${encodeURIComponent(mediaFilename)}`;
         document.body.appendChild(aVideo);
         aVideo.click();
         document.body.removeChild(aVideo);

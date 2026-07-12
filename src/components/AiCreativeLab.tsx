@@ -200,12 +200,14 @@ To fix this for Vercel/hosting:
     content: string;
     imageUrl?: string;
     type: "video" | "photo" | "post" | "ai_lab";
+    reportContent?: string;
   }>({
     title: "",
     filename: "",
     mimeType: "",
     content: "",
-    type: "ai_lab"
+    type: "ai_lab",
+    reportContent: undefined
   });
 
   // ==========================================

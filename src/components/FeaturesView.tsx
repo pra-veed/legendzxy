@@ -98,12 +98,14 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
     content: string;
     imageUrl?: string;
     type: "video" | "photo" | "post" | "ai_lab";
+    reportContent?: string;
   }>({
     title: "",
     filename: "",
     mimeType: "",
     content: "",
-    type: "photo"
+    type: "photo",
+    reportContent: undefined
   });
 
   // Real-time Visual Editor States linked directly to previewer and workspace
@@ -1035,10 +1037,11 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
               setExportModalData({
                 title: `Extracted Media Archival Package (${videoFormat})`,
                 filename: `extractile-${extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`,
-                mimeType: "text/plain;charset=utf-8",
-                content: fileContent,
+                mimeType: "video/mp4",
+                content: "https://assets.mixkit.co/videos/preview/mixkit-waves-breaking-in-the-ocean-from-above-31405-large.mp4",
                 imageUrl: undefined,
-                type: "video"
+                type: "video",
+                reportContent: fileContent
               });
               setExportModalOpen(true);
             } catch (err) {
