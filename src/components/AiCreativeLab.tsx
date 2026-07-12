@@ -15,6 +15,7 @@ import {
   SavedAiCreation 
 } from "../lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
+import UniversalExportModal from "./UniversalExportModal";
 
 interface AiCreativeLabProps {
   onTriggerAlert: (title: string, message: string) => void;
@@ -169,6 +170,23 @@ To fix this for Vercel/hosting:
       setChatLoading(false);
     }
   };
+
+  // Cross-OS Universal Export Modal States
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportModalData, setExportModalData] = useState<{
+    title: string;
+    filename: string;
+    mimeType: string;
+    content: string;
+    imageUrl?: string;
+    type: "video" | "photo" | "post" | "ai_lab";
+  }>({
+    title: "",
+    filename: "",
+    mimeType: "",
+    content: "",
+    type: "ai_lab"
+  });
 
   // ==========================================
   // MODULE 2: VIDEO & IMAGE SYNTHESIS
@@ -551,21 +569,20 @@ To fix this for Vercel/hosting:
   // ==========================================
   // MODULE 5: UNIVERSAL MULTI-OS EXPORTER
   // ==========================================
-  const exportFile = (content: string, filename: string, mimeType: string) => {
+  const exportFile = (content: string, filename: string, mimeType: string, customType: "video" | "photo" | "post" | "ai_lab" = "ai_lab") => {
     try {
-      const blob = new Blob([content], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      onTriggerAlert("Export Success", `Saved "${filename}" successfully.`);
+      const fileExt = filename.split('.').pop()?.toUpperCase() || "TXT";
+      setExportModalData({
+        title: `AI Lab Export Package (${fileExt})`,
+        filename,
+        mimeType,
+        content,
+        type: customType
+      });
+      setExportModalOpen(true);
     } catch (error) {
       console.error("Export Error:", error);
-      onTriggerAlert("Export Failed", "There was an issue downloading this asset format.");
+      onTriggerAlert("Export Failed", "There was an issue initiating the export wizard.");
     }
   };
 
@@ -1102,13 +1119,22 @@ To fix this for Vercel/hosting:
                       ) : generatedImg ? (
                         <div className="flex flex-col items-center gap-3 w-full">
                           <img src={generatedImg} alt="AI Generated" className="max-h-[240px] max-w-full object-contain border border-outline/30" />
-                          <a
-                            href={generatedImg}
-                            download="ai_design_rendering.png"
-                            className="flex items-center gap-1 text-[9px] font-mono font-bold tracking-wider text-secondary hover:underline uppercase"
+                          <button
+                            onClick={() => {
+                              setExportModalData({
+                                title: "AI Creative Lab - Generated Image Artifact",
+                                filename: "extractile-pixel-render.png",
+                                mimeType: "image/png",
+                                content: generatedImg,
+                                imageUrl: generatedImg,
+                                type: "photo"
+                              });
+                              setExportModalOpen(true);
+                            }}
+                            className="flex items-center gap-1 text-[9px] font-mono font-bold tracking-wider text-secondary hover:underline uppercase cursor-pointer"
                           >
                             <Download className="w-3 h-3" /> Save Artifact
-                          </a>
+                          </button>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center gap-2 text-center opacity-60">
@@ -1138,7 +1164,22 @@ To fix this for Vercel/hosting:
                         </div>
                       ) : generatedVideoUrl ? (
                         <div className="flex flex-col items-center gap-3 w-full">
-                          <video src={generatedVideoUrl} controls className="max-h-[240px] max-w-full object-contain border border-outline/30 bg-black" />
+                          <video src={generatedVideoUrl} controls className="max-h-[200px] max-w-full object-contain border border-outline/30 bg-black" />
+                          <button
+                            onClick={() => {
+                              setExportModalData({
+                                title: "AI Creative Lab - Veo Video Motion Render",
+                                filename: "extractile-veo-motion.mp4",
+                                mimeType: "video/mp4",
+                                content: generatedVideoUrl,
+                                type: "video"
+                              });
+                              setExportModalOpen(true);
+                            }}
+                            className="flex items-center gap-1 text-[9px] font-mono font-bold tracking-wider text-secondary hover:underline uppercase cursor-pointer"
+                          >
+                            <Download className="w-3 h-3" /> Save Video Artifact
+                          </button>
                           <span className="text-[9px] font-mono text-emerald-500 font-extrabold uppercase">Veo 3.1 Render complete</span>
                         </div>
                       ) : (
@@ -1163,6 +1204,21 @@ To fix this for Vercel/hosting:
                           <div className="p-3 border border-outline/20 bg-surface flex flex-col gap-1 items-center">
                             <span className="text-[10px] font-mono font-black uppercase text-secondary">LYRIA CORE TRACK</span>
                             <audio src={generatedAudioUrl} controls className="w-full mt-2" />
+                            <button
+                              onClick={() => {
+                                setExportModalData({
+                                  title: "AI Creative Lab - Lyria Audio Composition",
+                                  filename: "extractile-lyria-composition.mp3",
+                                  mimeType: "audio/mpeg",
+                                  content: generatedAudioUrl,
+                                  type: "video" // Will trigger audio-friendly preview layout or can be custom handled
+                                });
+                                setExportModalOpen(true);
+                              }}
+                              className="flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wider text-secondary hover:underline uppercase cursor-pointer mt-2"
+                            >
+                              <Download className="w-3 h-3" /> Save Audio Artifact
+                            </button>
                           </div>
 
                           <div className="p-3 bg-[#e4eaf0] border border-outline/10 text-primary">
@@ -1495,6 +1551,19 @@ To fix this for Vercel/hosting:
             </>
           </div>
       </div>
+
+      {/* Universal Export Modal for cross-device support */}
+      <UniversalExportModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        title={exportModalData.title}
+        filename={exportModalData.filename}
+        mimeType={exportModalData.mimeType}
+        content={exportModalData.content}
+        imageUrl={exportModalData.imageUrl}
+        type={exportModalData.type}
+        onTriggerAlert={onTriggerAlert}
+      />
     </div>
   );
 }

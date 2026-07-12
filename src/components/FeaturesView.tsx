@@ -37,6 +37,7 @@ import VideoPreviewSimulator from "./VideoPreviewSimulator";
 import MediaWorkspace from "./MediaWorkspace";
 import ExtractionProgressBar from "./ExtractionProgressBar";
 import AiCreativeLab from "./AiCreativeLab";
+import UniversalExportModal from "./UniversalExportModal";
 
 interface QueuedTask {
   id: string;
@@ -87,6 +88,23 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
   const [extractionFormat, setExtractionFormat] = useState<"MP4" | "MOV" | "MP3">("MP4");
   const [extractionMode, setExtractionMode] = useState<"media" | "photo" | "post">("media");
   const [selectedOS, setSelectedOS] = useState<"android" | "ios" | "windows">("android");
+
+  // Cross-OS Universal Export Modal States
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportModalData, setExportModalData] = useState<{
+    title: string;
+    filename: string;
+    mimeType: string;
+    content: string;
+    imageUrl?: string;
+    type: "video" | "photo" | "post" | "ai_lab";
+  }>({
+    title: "",
+    filename: "",
+    mimeType: "",
+    content: "",
+    type: "photo"
+  });
 
   // Real-time Visual Editor States linked directly to previewer and workspace
   const [videoFilter, setVideoFilter] = useState("");
@@ -453,34 +471,40 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
           canvas.toBlob((blob) => {
             if (blob) {
               const urlBlob = window.URL.createObjectURL(blob);
-              const a = document.createElement('a');
-              a.href = urlBlob;
-              a.download = `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${resolution.toLowerCase()}.${ext}`;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              window.URL.revokeObjectURL(urlBlob);
+              setExportModalData({
+                title: `Extracted Photo Artifact (${resolution})`,
+                filename: `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${resolution.toLowerCase()}.${ext}`,
+                mimeType: mimeType,
+                content: urlBlob,
+                imageUrl: urlBlob,
+                type: "photo"
+              });
+              setExportModalOpen(true);
             }
           }, mimeType, 0.98); // High quality compression
         }
       };
       img.onerror = () => {
-        const a = document.createElement('a');
-        a.href = imgUrl;
-        a.target = "_blank";
-        a.download = `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-cover.${format.toLowerCase() === "jpeg" ? "jpg" : format.toLowerCase()}`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        setExportModalData({
+          title: "Extracted Photo Artifact",
+          filename: `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-cover.${format.toLowerCase() === "jpeg" ? "jpg" : format.toLowerCase()}`,
+          mimeType: format === "PNG" ? "image/png" : format === "WEBP" ? "image/webp" : "image/jpeg",
+          content: imgUrl,
+          imageUrl: imgUrl,
+          type: "photo"
+        });
+        setExportModalOpen(true);
       };
     } catch (err) {
-      const a = document.createElement('a');
-      a.href = imgUrl;
-      a.target = "_blank";
-      a.download = `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-cover.${format.toLowerCase() === "jpeg" ? "jpg" : format.toLowerCase()}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      setExportModalData({
+        title: "Extracted Photo Artifact",
+        filename: `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-cover.${format.toLowerCase() === "jpeg" ? "jpg" : format.toLowerCase()}`,
+        mimeType: format === "PNG" ? "image/png" : format === "WEBP" ? "image/webp" : "image/jpeg",
+        content: imgUrl,
+        imageUrl: imgUrl,
+        type: "photo"
+      });
+      setExportModalOpen(true);
     }
   };
 
@@ -490,16 +514,14 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
       const filename = `${cleanTitleStr || "extracted-post"}-narrative.${format.toLowerCase()}`;
       
       if (format === "TXT") {
-        const blob = new Blob([textStr], { type: "text/plain;charset=utf-8" });
-        const urlBlob = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = urlBlob;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(urlBlob);
-        onTriggerAlert?.("Post Downloaded", "Narrative clean text file has been exported successfully.");
+        setExportModalData({
+          title: "Extracted Narrative Post (TXT)",
+          filename: filename,
+          mimeType: "text/plain;charset=utf-8",
+          content: textStr,
+          type: "post"
+        });
+        setExportModalOpen(true);
       } else if (format === "JSON") {
         const jsonPayload = JSON.stringify({
           title: titleStr,
@@ -510,16 +532,15 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
           timestamp: new Date().toISOString(),
           narrative_content: textStr
         }, null, 2);
-        const blob = new Blob([jsonPayload], { type: "application/json;charset=utf-8" });
-        const urlBlob = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = urlBlob;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(urlBlob);
-        onTriggerAlert?.("Post Downloaded", "Structured JSON metadata file has been exported successfully.");
+        
+        setExportModalData({
+          title: "Extracted Narrative Metadata (JSON)",
+          filename: filename,
+          mimeType: "application/json;charset=utf-8",
+          content: jsonPayload,
+          type: "post"
+        });
+        setExportModalOpen(true);
       } else if (format === "PDF") {
         const doc = new jsPDF({
           orientation: "portrait",
@@ -628,12 +649,22 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
           y += 2.5;
         });
         
-        doc.save(filename);
-        onTriggerAlert?.("Post Downloaded", "Universal PDF Narrative Document has been generated & exported successfully.");
+        const pdfBlob = doc.output('blob');
+        const urlBlob = window.URL.createObjectURL(pdfBlob);
+        
+        setExportModalData({
+          title: "Extracted Narrative (Universal PDF Document)",
+          filename: filename,
+          mimeType: "application/pdf",
+          content: urlBlob,
+          imageUrl: undefined,
+          type: "post"
+        });
+        setExportModalOpen(true);
       }
     } catch (err: any) {
-      console.error("PDF generation failed:", err);
-      onTriggerAlert?.("Export Error", "Failed to generate universal document file format.");
+      console.error("Narrative generation failed:", err);
+      onTriggerAlert?.("Export Error", "Failed to compile narrative document.");
     }
   };
 
@@ -948,26 +979,15 @@ System Status: Certified Reconstructed Byte Stream Envelopes Sealed
 License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 =========================================`;
 
-              const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
-              const fileUrl = window.URL.createObjectURL(blob);
-              
-              // 1. Download txt report
-              const aReport = document.createElement('a');
-              aReport.href = fileUrl;
-              aReport.download = `extractile-${extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-report.txt`;
-              document.body.appendChild(aReport);
-              aReport.click();
-              document.body.removeChild(aReport);
-
-              // 2. Download mock video container file with correct extension
-              const aVideo = document.createElement('a');
-              aVideo.href = fileUrl;
-              aVideo.download = `extractile-${extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`;
-              document.body.appendChild(aVideo);
-              aVideo.click();
-              document.body.removeChild(aVideo);
-
-              window.URL.revokeObjectURL(fileUrl);
+              setExportModalData({
+                title: `Extracted Media Archival Package (${videoFormat})`,
+                filename: `extractile-${extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`,
+                mimeType: "text/plain;charset=utf-8",
+                content: fileContent,
+                imageUrl: undefined,
+                type: "video"
+              });
+              setExportModalOpen(true);
             } catch (err) {
               console.error("Txt download trigger error:", err);
             }
@@ -2496,6 +2516,18 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
           </motion.div>
         )}
       </AnimatePresence>
+
+      <UniversalExportModal
+        isOpen={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+        title={exportModalData.title}
+        filename={exportModalData.filename}
+        mimeType={exportModalData.mimeType}
+        content={exportModalData.content}
+        imageUrl={exportModalData.imageUrl}
+        type={exportModalData.type}
+        onTriggerAlert={onTriggerAlert || ((title, msg) => alert(`${title}: ${msg}`))}
+      />
     </div>
   );
 }
