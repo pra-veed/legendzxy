@@ -34,33 +34,41 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
       onTriggerAlert("Welcome back!", "Successfully signed in via Google Secure Authentication.");
     } catch (err: any) {
       console.error("Sign-In Error caught in Navbar:", err);
+      
+      const isInvalidApiKey = err.code === "auth/api-key-not-valid" ||
+                              err.message?.toLowerCase().includes("api-key-not-valid") ||
+                              err.message?.toLowerCase().includes("invalid-api-key") ||
+                              err.message?.toLowerCase().includes("api key not valid") ||
+                              err.message?.toLowerCase().includes("invalid api key");
+
       // Check if it is an unauthorized domain error (common when deploying to Vercel/Netlify/custom domains)
       const isUnauthorizedDomain = err.code === "auth/unauthorized-domain" || 
-                                    err.message?.includes("unauthorized-domain") || 
-                                    err.message?.includes("unauthorized domain") ||
-                                    err.message?.includes("not authorized to run this operation");
+                                    err.message?.toLowerCase().includes("unauthorized-domain") || 
+                                    err.message?.toLowerCase().includes("unauthorized domain") ||
+                                    err.message?.toLowerCase().includes("not authorized to run this operation");
 
       // Check if it is a popup-closed-by-user or blocked error
       const isPopupError = err.code === "auth/popup-closed-by-user" || 
                            err.code === "auth/cancelled-popup-request" ||
-                           err.message?.includes("closed") || 
-                           err.message?.includes("popup");
+                           err.code === "auth/popup-blocked" ||
+                           err.message?.toLowerCase().includes("closed") || 
+                           err.message?.toLowerCase().includes("popup") ||
+                           err.message?.toLowerCase().includes("pending promise");
       
-      if (isUnauthorizedDomain) {
+      if (isInvalidApiKey) {
+        onTriggerAlert(
+          "Custom Deployment Config Required",
+          "This Vercel hosting domain is using default development Firebase credentials which are restricted to the AI Studio preview environment.\n\nTo resolve this:\n1. Create your own Firebase project at console.firebase.google.com\n2. Add your custom Firebase config keys (VITE_FIREBASE_API_KEY, VITE_FIREBASE_AUTH_DOMAIN, etc.) to your Vercel project Environment Variables.\n3. Re-deploy on Vercel, and the app will connect securely to your own project!"
+        );
+      } else if (isUnauthorizedDomain) {
         onTriggerAlert(
           "Hosting Domain Unauthorized",
-          `Google Sign-In is blocked because the current domain (${window.location.hostname}) is not yet authorized in your Firebase Project. 
-
-To fix this for Vercel/hosting:
-1. Open the Firebase Console for your project.
-2. Navigate to Authentication > Settings > Authorized Domains.
-3. Click "Add domain" and enter: ${window.location.hostname}
-4. Click Save, and Google Sign-In will start working immediately on your hosting domain!`
+          `Google Sign-In is blocked because the current domain (${window.location.hostname}) is not yet authorized in the Firebase project.\n\nSince this default sandbox database is auto-managed, you cannot see the 'Add Domain' button.\n\nTo fix this:\n1. Set up your own Firebase Project in the Firebase console.\n2. Navigate to Authentication > Settings > Authorized Domains, click "Add domain" and enter: ${window.location.hostname}\n3. Configure your custom project values in your Vercel environment variables.`
         );
       } else if (isPopupError) {
         onTriggerAlert(
           "Popup Blocked / Closed", 
-          "Google Authentication popups are restricted inside standard browser iframes. Click 'Open in new tab' at the top-right of your screen to sign in with Google securely, which will enable full cloud preferences and history logging."
+          "Google Authentication popups are restricted inside standard browser iframes or can be blocked by your browser.\n\nIf you are using the AI Studio preview, click 'Open in new tab' at the top-right of your screen to sign in. If you are on Vercel, ensure popups are allowed for this site."
         );
       } else {
         onTriggerAlert("Authentication Failed", err.message || "Could not log in.");

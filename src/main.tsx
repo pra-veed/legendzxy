@@ -10,15 +10,21 @@ createRoot(document.getElementById('root')!).render(
 );
 
 if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then((reg) => {
-        console.log("[Service Worker] Registered successfully:", reg.scope);
-      })
-      .catch((err) => {
-        console.error("[Service Worker] Registration failed:", err);
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const registration of registrations) {
+      registration.unregister().then(() => {
+        console.log("[Service Worker] Unregistered successfully to bypass cache");
       });
+    }
   });
+  if (window.caches) {
+    caches.keys().then((names) => {
+      for (const name of names) {
+        caches.delete(name).then(() => {
+          console.log("[Cache] Cleared stale cache store:", name);
+        });
+      }
+    });
+  }
 }
 

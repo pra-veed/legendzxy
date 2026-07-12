@@ -23,16 +23,57 @@ import {
   setDoc
 } from "firebase/firestore";
 
-// Load configuration
-const firebaseConfig = {
-  apiKey: (import.meta.env.VITE_FIREBASE_API_KEY as string) || "AIzaSyDLFtYUVwCUo1zBdI6vu1dUKUFG1OvnLng",
-  authDomain: (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string) || "curious-shadow-v07pf.firebaseapp.com",
-  projectId: (import.meta.env.VITE_FIREBASE_PROJECT_ID as string) || "curious-shadow-v07pf",
-  storageBucket: (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string) || "curious-shadow-v07pf.firebasestorage.app",
-  messagingSenderId: (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string) || "1036483995473",
-  appId: (import.meta.env.VITE_FIREBASE_APP_ID as string) || "1:1036483995473:web:324e1101ee4c1d69ecd570",
-  databaseId: (import.meta.env.VITE_FIREBASE_DATABASE_ID as string) || "ai-studio-extractpro-b33dcd1a-c15c-4013-b760-5cd0936fd65d"
+// Load configuration with robust validation and fallback
+const isValidCustom = (value: string | undefined, isApiKey = false): boolean => {
+  if (!value) return false;
+  const trimmed = value.trim();
+  if (
+    trimmed === "" || 
+    trimmed === "undefined" || 
+    trimmed === "null" || 
+    trimmed === "123456789" ||
+    trimmed.includes("placeholder")
+  ) {
+    return false;
+  }
+  if (isApiKey && !trimmed.startsWith("AIzaSy")) {
+    return false;
+  }
+  return true;
 };
+
+const rawApiKey = import.meta.env.VITE_FIREBASE_API_KEY as string | undefined;
+const rawProjectId = import.meta.env.VITE_FIREBASE_PROJECT_ID as string | undefined;
+
+// We only use custom config if BOTH the custom API Key and custom Project ID are valid.
+// Otherwise, we force-fall back to the default sandbox project to ensure zero mismatch/corruption.
+const hasCustomConfig = isValidCustom(rawApiKey, true) && isValidCustom(rawProjectId);
+
+const firebaseConfig = {
+  apiKey: hasCustomConfig 
+    ? rawApiKey!.trim() 
+    : "AIzaSyDLFtYUVwCUo1zBdI6vu1dUKUFG1OvnLng",
+  authDomain: hasCustomConfig && isValidCustom(import.meta.env.VITE_FIREBASE_AUTH_DOMAIN)
+    ? (import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string).trim()
+    : "curious-shadow-v07pf.firebaseapp.com",
+  projectId: hasCustomConfig
+    ? rawProjectId!.trim()
+    : "curious-shadow-v07pf",
+  storageBucket: hasCustomConfig && isValidCustom(import.meta.env.VITE_FIREBASE_STORAGE_BUCKET)
+    ? (import.meta.env.VITE_FIREBASE_STORAGE_BUCKET as string).trim()
+    : "curious-shadow-v07pf.firebasestorage.app",
+  messagingSenderId: hasCustomConfig && isValidCustom(import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID)
+    ? (import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID as string).trim()
+    : "1036483995473",
+  appId: hasCustomConfig && isValidCustom(import.meta.env.VITE_FIREBASE_APP_ID)
+    ? (import.meta.env.VITE_FIREBASE_APP_ID as string).trim()
+    : "1:1036483995473:web:324e1101ee4c1d69ecd570",
+  databaseId: hasCustomConfig && isValidCustom(import.meta.env.VITE_FIREBASE_DATABASE_ID)
+    ? (import.meta.env.VITE_FIREBASE_DATABASE_ID as string).trim()
+    : "ai-studio-extractpro-b33dcd1a-c15c-4013-b760-5cd0936fd65d"
+};
+
+console.log("[Firebase] Initialization Active. Custom config detected:", hasCustomConfig);
 
 const app = initializeApp(firebaseConfig);
 
