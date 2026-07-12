@@ -143,55 +143,8 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
           })}
         </div>
 
-        {/* Desktop Action & Login Buttons */}
+        {/* Desktop Action Buttons */}
         <div className="hidden md:flex items-center gap-6">
-          {authLoading ? (
-            <div className="flex items-center gap-1.5 py-1">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-secondary" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant/70">Syncing...</span>
-            </div>
-          ) : user ? (
-            <div className="flex items-center gap-3 bg-surface-container-low/40 p-1 px-2 border border-outline/10">
-              <div 
-                onClick={() => setActiveTab("profile")}
-                className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-                title="View Profile Settings"
-              >
-                {user.photoURL ? (
-                  <img 
-                    src={user.photoURL} 
-                    alt={user.displayName || "User"} 
-                    className="w-6 h-6 rounded-full border border-secondary" 
-                    referrerPolicy="no-referrer"
-                  />
-                ) : (
-                  <div className="w-6 h-6 bg-secondary text-primary flex items-center justify-center font-bold text-[10px] uppercase rounded-full">
-                    {user.displayName?.charAt(0) || user.email?.charAt(0) || "U"}
-                  </div>
-                )}
-                <div className="hidden lg:flex flex-col">
-                  <span className="text-[10px] font-bold text-primary font-sans leading-none">{user.displayName?.split(" ")[0] || "Operator"}</span>
-                </div>
-              </div>
-              <button 
-                onClick={handleLogout}
-                className="text-[10px] font-mono font-bold text-secondary hover:text-primary transition-colors uppercase flex items-center gap-1 cursor-pointer ml-1"
-                title="Sign Out"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={handleLogin}
-              className="px-3.5 py-2 text-[10px] tracking-wider uppercase font-bold border border-primary/30 hover:border-secondary text-primary hover:bg-[#e4eaf0] transition-all flex items-center gap-1.5 cursor-pointer rounded-none"
-              title="Sign in with your Google account"
-            >
-              <LogIn className="w-3.5 h-3.5 text-secondary" />
-              <span>SIGN IN</span>
-            </button>
-          )}
-
           <button 
             onClick={onStartExtracting}
             className="px-5 py-2 text-[10px] tracking-wider uppercase font-bold bg-primary text-on-primary hover:bg-secondary cursor-pointer transition-all duration-200 active:scale-95 rounded-none shadow-[3px_3px_0px_#4f5e7c]"
@@ -242,56 +195,6 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
               );
             })}
           </div>
-          <div className="h-px bg-outline/25 w-full" />
-          
-          {/* Mobile Login Row */}
-          <div className="bg-surface-container-low/60 p-4 border border-outline/10">
-            {authLoading ? (
-              <div className="flex items-center gap-2 py-1.5 justify-center">
-                <Loader2 className="w-4 h-4 animate-spin text-secondary" />
-                <span className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant">Checking Session...</span>
-              </div>
-            ) : user ? (
-              <div className="flex flex-col gap-3">
-                <div className="flex items-center gap-3">
-                  {user.photoURL ? (
-                    <img 
-                      src={user.photoURL} 
-                      alt={user.displayName || "User"} 
-                      className="w-8 h-8 rounded-full border border-secondary" 
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-secondary text-primary flex items-center justify-center font-bold text-xs uppercase rounded-full">
-                      {user.displayName?.charAt(0) || user.email?.charAt(0) || "U"}
-                    </div>
-                  )}
-                  <div className="flex flex-col">
-                    <span className="text-xs font-bold text-primary font-sans">{user.displayName || "Operator"}</span>
-                    <span className="text-[9px] font-mono text-on-surface-variant/70">{user.email}</span>
-                  </div>
-                </div>
-                <button 
-                  onClick={handleLogout}
-                  className="w-full py-2 flex items-center justify-center gap-2 border border-red-500/20 text-red-500 font-bold text-[10px] tracking-widest uppercase hover:bg-red-500/5 cursor-pointer transition-all"
-                >
-                  <LogOut className="w-3.5 h-3.5" /> SIGN OUT
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <span className="text-[9px] font-mono text-on-surface-variant uppercase tracking-wider text-center block">Cloud Sync Enabled</span>
-                <button
-                  onClick={handleLogin}
-                  className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-[#e4eaf0] hover:bg-[#d5dde4] border border-primary/25 text-primary font-bold text-[10px] tracking-widest uppercase transition-all cursor-pointer rounded-none"
-                >
-                  <LogIn className="w-3.5 h-3.5" /> SIGN IN WITH GOOGLE
-                </button>
-              </div>
-            )}
-          </div>
-          
-          <div className="h-px bg-outline/25 w-full" />
           
           <button 
             onClick={() => {

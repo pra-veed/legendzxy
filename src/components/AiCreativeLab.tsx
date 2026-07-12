@@ -709,54 +709,6 @@ To fix this for Vercel/hosting:
             Empower your workflow with high-thinking chatbots, Lyria audio tracks, 1K/4K custom image layouts, Veo motion generation, and verified Google live datasets.
           </p>
         </div>
-
-        {/* User Login/Auth Control Card */}
-        <div className="z-10 flex flex-col items-stretch md:items-end gap-2 bg-[#1b222c]/50 p-4 border border-outline/30 backdrop-blur-sm min-w-[260px]">
-          {authLoading ? (
-            <div className="flex items-center gap-2 py-2">
-              <Loader2 className="w-4 h-4 animate-spin text-secondary" />
-              <span className="text-[10px] font-mono uppercase tracking-wider text-secondary">Loading Profile...</span>
-            </div>
-          ) : user ? (
-            <div className="flex flex-col items-stretch gap-2.5 w-full">
-              <div className="flex items-center gap-2.5">
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt={user.displayName || ""} className="w-8 h-8 rounded-full border border-secondary" referrerPolicy="no-referrer" />
-                ) : (
-                  <div className="w-8 h-8 bg-secondary text-primary flex items-center justify-center font-bold text-xs uppercase rounded-full">
-                    {user.displayName?.charAt(0) || user.email?.charAt(0) || "U"}
-                  </div>
-                )}
-                <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-on-primary font-sans leading-none">{user.displayName || "Studio Operator"}</span>
-                  <span className="text-[9px] font-mono text-secondary/90 truncate max-w-[150px]">{user.email}</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between gap-2 border-t border-outline/20 pt-2">
-                <span className="text-[8px] font-mono bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 uppercase tracking-widest flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span> Cloud Synced
-                </span>
-                <button 
-                  onClick={handleLogout}
-                  className="text-[9px] font-bold text-secondary hover:underline tracking-wider uppercase flex items-center gap-1.5 cursor-pointer"
-                >
-                  <LogOut className="w-3 h-3" /> Sign Out
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2 w-full">
-              <span className="text-[9px] font-mono text-secondary uppercase tracking-widest text-center">Unauthenticated Session</span>
-              <button
-                onClick={handleLogin}
-                className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-secondary text-primary font-bold text-[10px] tracking-widest uppercase hover:bg-secondary/90 transition-all cursor-pointer rounded-none"
-              >
-                <LogIn className="w-3.5 h-3.5" /> Sign In with Google
-              </button>
-              <p className="text-[8px] font-sans text-on-primary/60 text-center">Enable secure persistent history synced across all devices.</p>
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Main Studio Interactive Panel */}
@@ -854,32 +806,7 @@ To fix this for Vercel/hosting:
 
         {/* Workspace Display */}
         <div className="lg:col-span-3 border border-primary bg-surface p-6 shadow-[3px_3px_0px_#1b222c] flex flex-col min-h-[460px]">
-          {authLoading ? (
-            <div className="flex-grow flex flex-col justify-center items-center gap-3 py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-secondary" />
-              <span className="text-xs font-mono uppercase tracking-widest text-primary/70">Verifying session keys...</span>
-            </div>
-          ) : !user ? (
-            <div className="flex-grow flex flex-col justify-center items-center text-center p-8 max-w-md mx-auto gap-5 my-auto">
-              <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center border border-secondary text-secondary animate-pulse">
-                <ShieldAlert className="w-8 h-8" />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h3 className="font-display font-black text-xl uppercase tracking-tight text-primary">Authentication Required</h3>
-                <p className="font-sans text-xs text-on-surface-variant leading-relaxed">
-                  The Advanced AI Magic Lab features (Thinking Chatbot, Veo Motion Video, Lyria Audio, and Google live datasets) require active cloud sync. Please sign in to verify your operator profile.
-                </p>
-              </div>
-              <button
-                onClick={handleLogin}
-                className="w-full flex items-center justify-center gap-2.5 py-3 px-5 bg-primary text-on-primary font-bold text-xs tracking-widest uppercase hover:bg-secondary transition-all cursor-pointer border border-primary shadow-[3px_3px_0px_#ea580c] active:scale-[0.98]"
-              >
-                <LogIn className="w-4 h-4" /> Sign In with Google
-              </button>
-              <span className="text-[10px] font-mono text-primary/60 uppercase">SECURE GOOGLE AUTHENTICATION SYSTEM</span>
-            </div>
-          ) : (
-            <>
+          <>
               {/* TAB 1: INTUITIVE CHAT INTERFACE */}
           {activeSubTab === "chat" && (
             <div className="flex-grow flex flex-col gap-4">
@@ -1566,9 +1493,7 @@ To fix this for Vercel/hosting:
                 </div>
               </div>
             </>
-          )}
-
-        </div>
+          </div>
       </div>
     </div>
   );
