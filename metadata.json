@@ -1,0 +1,6 @@
+{
+  "name": "Extractile",
+  "description": "High-fidelity social media extraction platform for pristine audio and 1080p video stream scaling with high-fidelity performance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

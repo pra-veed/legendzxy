@@ -1,0 +1,161 @@
+{
+  "entities": {
+    "SavedExtraction": {
+      "title": "SavedExtraction",
+      "description": "User saved extractions of social media content",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The unique ID of the user who owns this extraction record"
+        },
+        "url": {
+          "type": "string",
+          "description": "The extracted media source URL"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the extraction"
+        },
+        "channel": {
+          "type": "string",
+          "description": "The channel or brand name"
+        },
+        "duration": {
+          "type": "string",
+          "description": "The media duration"
+        },
+        "views": {
+          "type": "string",
+          "description": "Views count representation"
+        },
+        "thumbnailUrl": {
+          "type": "string",
+          "description": "Visual thumbnail preview URL"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Firestore Server Timestamp of creation"
+        }
+      },
+      "required": ["userId", "url", "title", "createdAt"]
+    },
+    "SavedAiCreation": {
+      "title": "SavedAiCreation",
+      "description": "User's AI creations from the magic lab",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "User owner ID"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["image", "video", "music", "chat", "audio_transcription"],
+          "description": "The generated media type"
+        },
+        "prompt": {
+          "type": "string",
+          "description": "AI prompt used"
+        },
+        "outputUrl": {
+          "type": "string",
+          "description": "URL link to final generated media output"
+        },
+        "textResult": {
+          "type": "string",
+          "description": "Generated text response for chats"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Firestore Server Timestamp of creation"
+        }
+      },
+      "required": ["userId", "type", "prompt", "createdAt"]
+    },
+    "UserPreferences": {
+      "title": "UserPreferences",
+      "description": "User customization and history tracking preferences",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "User owner ID matching their auth UID"
+        },
+        "autoSaveHistory": {
+          "type": "boolean",
+          "description": "Whether extraction history is saved automatically to cloud history"
+        },
+        "historyLimit": {
+          "type": "integer",
+          "description": "Maximum number of extraction history entries to display"
+        },
+        "defaultDownloadType": {
+          "type": "string",
+          "enum": ["mp3", "mp4", "srt", "txt"],
+          "description": "Default file download format"
+        },
+        "notifyOnComplete": {
+          "type": "boolean",
+          "description": "Receive toast/browser alerts on completed tasks"
+        },
+        "themePreference": {
+          "type": "string",
+          "enum": ["light", "dark"],
+          "description": "System UI theme preference"
+        },
+        "updatedAt": {
+          "type": "object",
+          "description": "Firestore Server Timestamp of update"
+        }
+      },
+      "required": ["userId", "autoSaveHistory", "themePreference"]
+    },
+    "ContactInquiry": {
+      "title": "ContactInquiry",
+      "description": "User feedback and message inquiries",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of inquirer"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of inquirer"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject line"
+        },
+        "message": {
+          "type": "string",
+          "description": "Body message of contact form"
+        },
+        "createdAt": {
+          "type": "object",
+          "description": "Timestamp of creation"
+        }
+      },
+      "required": ["name", "email", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/extractions/{docId}": {
+      "schema": "SavedExtraction",
+      "description": "Stores user extractions"
+    },
+    "/ai_creations/{docId}": {
+      "schema": "SavedAiCreation",
+      "description": "Stores creative AI outputs"
+    },
+    "/user_preferences/{userId}": {
+      "schema": "UserPreferences",
+      "description": "Stores individual user preferences where document ID matches Auth UID"
+    },
+    "/contact_inquiries/{docId}": {
+      "schema": "ContactInquiry",
+      "description": "Stores user inquiries"
+    }
+  }
+}

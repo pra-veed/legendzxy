@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-color: #f1f0f9;
+  --surface-color: #e4e2f2;
+  --surface-dim-color: #d7d4eb;
+  --surface-bright-color: #ffffff;
+  --surface-lowest-color: #faf9ff;
+  --surface-low-color: #edeaf7;
+  --surface-container-color: #e4e2f2;
+  --surface-high-color: #d7d4eb;
+  --surface-highest-color: #c7c3e3;
+  --on-surface-color: #1a192e;
+  --on-surface-variant-color: #4f4c6b;
+  --outline-color: #1a192e;
+  --outline-variant-color: #b9b5d4;
+  
+  --primary-color: #1a192e;
+  --on-primary-color: #f1f0f9;
+  --primary-container-color: #1a192e;
+  --on-primary-container-color: #f1f0f9;
+  
+  --secondary-color: #555180;
+  --on-secondary-color: #ffffff;
+  --secondary-container-color: #d7d4eb;
+  
+  --tertiary-color: #82664c;
+  --on-tertiary-color: #f1f0f9;
+  --tertiary-container-color: #c7c3e3;
+}
+
+.dark {
+  --bg-color: #0a0f24; /* Rich Midnight Sapphire */
+  --surface-color: #101738; /* Soft Indigo Surface */
+  --surface-dim-color: #0b0f2a;
+  --surface-bright-color: #1a2354;
+  --surface-lowest-color: #040717;
+  --surface-low-color: #0d1231;
+  --surface-container-color: #101738;
+  --surface-high-color: #1a2354;
+  --surface-highest-color: #243172;
+  --on-surface-color: #f1f5f9;
+  --on-surface-variant-color: #94a3b8;
+  --outline-color: #f1f5f9;
+  --outline-variant-color: #3b4f8c;
+  
+  --primary-color: #f1f5f9;
+  --on-primary-color: #0a0f24;
+  --primary-container-color: #f1f5f9;
+  --on-primary-container-color: #0a0f24;
+  
+  --secondary-color: #a5b4fc; /* Bright Lavender Accent */
+  --on-secondary-color: #0a0f24;
+  --secondary-container-color: #1e1b4b;
+  
+  --tertiary-color: #fbcfe8;
+  --on-tertiary-color: #0a0f24;
+  --tertiary-container-color: #37182a;
+}
+
+@theme {
+  --color-background: var(--bg-color);
+  --color-surface: var(--surface-color);
+  --color-surface-dim: var(--surface-dim-color);
+  --color-surface-bright: var(--surface-bright-color);
+  --color-surface-container-lowest: var(--surface-lowest-color);
+  --color-surface-container-low: var(--surface-low-color);
+  --color-surface-container: var(--surface-container-color);
+  --color-surface-container-high: var(--surface-high-color);
+  --color-surface-container-highest: var(--surface-highest-color);
+  --color-on-surface: var(--on-surface-color);
+  --color-on-surface-variant: var(--on-surface-variant-color);
+  --color-outline: var(--outline-color);
+  --color-outline-variant: var(--outline-variant-color);
+  
+  --color-primary: var(--primary-color);
+  --color-on-primary: var(--on-primary-color);
+  --color-primary-container: var(--primary-container-color);
+  --color-on-primary-container: var(--on-primary-container-color);
+  
+  --color-secondary: var(--secondary-color);
+  --color-on-secondary: var(--on-secondary-color);
+  --color-secondary-container: var(--secondary-container-color);
+  
+  --color-tertiary: var(--tertiary-color);
+  --color-on-tertiary: var(--on-tertiary-color);
+  --color-tertiary-container: var(--tertiary-container-color);
+  
+  --font-sans: "Outfit", "Plus Jakarta Sans", sans-serif;
+  --font-serif: "Lora", serif;
+  --font-display: "Lora", serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-color);
+    color: var(--on-surface-color);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--on-surface-color);
+    font-family: var(--font-serif);
+    font-weight: 500;
+    line-height: 1.25;
+    transition: color 0.2s ease-in-out;
+  }
+
+  p {
+    font-family: var(--font-sans);
+    color: var(--on-surface-variant-color);
+    line-height: 1.625;
+    transition: color 0.2s ease-in-out;
+  }
+
+  a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+  }
+
+  a:hover {
+    color: var(--on-surface-color);
+  }
+}
+
+/* Editorial & High Fashion Architectural Elements */
+.glass-panel {
+  background: rgba(240, 244, 241, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #1b222c;
+}
+
+.glow-blue {
+  box-shadow: 4px 4px 0px #1b222c;
+}
+
+.glow-primary {
+  box-shadow: 2px 2px 0px rgba(27, 38, 31, 0.15);
+  border: 1px solid #b6c3d4;
+}
+
+.glow-secondary {
+  box-shadow: 4px 4px 0px #4f5e7c;
+  border: 1px solid #1b222c;
+}
+
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(27, 38, 31, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(27, 38, 31, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #1b222c, #4f5e7c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Custom Scrollbars in clean, matching style */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Elegant shadow line decoration instead of glows */
+.aura-bg {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(160px);
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Custom layout sizing and spacing standard helpers */
+.min-h-touch {
+  min-height: 44px;
+}
+.min-w-touch {
+  min-width: 44px;
+}
+
+/* Editorial-specific custom styles */
+.serif-header {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.sans-tag {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.mono-spec {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: -0.01em;
+}
