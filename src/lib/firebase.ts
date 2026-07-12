@@ -141,7 +141,19 @@ export const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
   } catch (error: any) {
-    console.error("Google Sign-In Error:", error);
+    const isPopupClosedOrCancelled = 
+      error?.code === "auth/popup-closed-by-user" || 
+      error?.code === "auth/cancelled-popup-request" ||
+      error?.code === "auth/popup-blocked" ||
+      error?.message?.toLowerCase().includes("closed") || 
+      error?.message?.toLowerCase().includes("popup") ||
+      error?.message?.toLowerCase().includes("pending promise");
+
+    if (isPopupClosedOrCancelled) {
+      console.warn("Google Sign-In popup closed or cancelled by user:", error);
+    } else {
+      console.error("Google Sign-In Error:", error);
+    }
     throw error;
   }
 };

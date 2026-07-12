@@ -33,8 +33,6 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
       await signInWithGoogle();
       onTriggerAlert("Welcome back!", "Successfully signed in via Google Secure Authentication.");
     } catch (err: any) {
-      console.error("Sign-In Error caught in Navbar:", err);
-      
       const isInvalidApiKey = err.code === "auth/api-key-not-valid" ||
                               err.message?.toLowerCase().includes("api-key-not-valid") ||
                               err.message?.toLowerCase().includes("invalid-api-key") ||
@@ -54,6 +52,12 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
                            err.message?.toLowerCase().includes("closed") || 
                            err.message?.toLowerCase().includes("popup") ||
                            err.message?.toLowerCase().includes("pending promise");
+
+      if (isPopupError) {
+        console.warn("Sign-In popup closed or cancelled by user, caught in Navbar:", err);
+      } else {
+        console.error("Sign-In Error caught in Navbar:", err);
+      }
       
       if (isInvalidApiKey) {
         onTriggerAlert(
