@@ -39,6 +39,7 @@ interface MediaWorkspaceProps {
   onAiPhotoEffectChange: (effect: string) => void;
   videoFormat?: "MP4" | "WEBM" | "MKV" | "MOV" | "MP3";
   photoFormat?: "PNG" | "WEBP" | "JPEG";
+  extractionMode?: "media" | "photo" | "post";
 }
 
 export default function MediaWorkspace({
@@ -52,10 +53,21 @@ export default function MediaWorkspace({
   onWatermarkChange,
   onAiPhotoEffectChange,
   videoFormat = "MP4",
-  photoFormat = "JPEG"
+  photoFormat = "JPEG",
+  extractionMode = "media"
 }: MediaWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<"video" | "audio" | "photo">("video");
+  const [activeTab, setActiveTab] = useState<"video" | "audio" | "photo">(
+    extractionMode === "photo" ? "photo" : "video"
+  );
   const [photoResolution, setPhotoResolution] = useState<"4K" | "2K" | "1080P" | "720P">("4K");
+
+  useEffect(() => {
+    if (extractionMode === "photo") {
+      setActiveTab("photo");
+    } else {
+      setActiveTab("video");
+    }
+  }, [extractionMode]);
 
   // Playback timeline slider state (synced playhead like CapCut/Inshot)
   const [playheadTime, setPlayheadTime] = useState(0); // percentage 0-100
@@ -657,44 +669,50 @@ EXPORT CODEC STANDARD:
         
         {/* Workspace Suite Tabs Styled like Filmora Toolbar */}
         <div className="flex items-center gap-1 bg-neutral-950 border border-neutral-800 p-1 w-full xl:w-auto rounded-none">
-          <button
-            type="button"
-            onClick={() => { setActiveTab("video"); stopSynthPreview(); }}
-            className={`flex-1 xl:flex-initial px-5 py-2.5 text-[10px] font-mono font-black uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-2 ${
-              activeTab === "video"
-                ? "bg-secondary text-white shadow-[2px_2px_0px_#000]"
-                : "text-neutral-400 hover:text-white hover:bg-neutral-900"
-            }`}
-          >
-            <FileVideo className="w-3.5 h-3.5 text-secondary" />
-            <span>🎞️ Video Track</span>
-          </button>
+          {extractionMode === "media" && (
+            <>
+              <button
+                type="button"
+                onClick={() => { setActiveTab("video"); stopSynthPreview(); }}
+                className={`flex-1 xl:flex-initial px-5 py-2.5 text-[10px] font-mono font-black uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                  activeTab === "video"
+                    ? "bg-secondary text-white shadow-[2px_2px_0px_#000]"
+                    : "text-neutral-400 hover:text-white hover:bg-neutral-900"
+                }`}
+              >
+                <FileVideo className="w-3.5 h-3.5 text-secondary" />
+                <span>🎞️ Video Track</span>
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setActiveTab("audio")}
+                className={`flex-1 xl:flex-initial px-5 py-2.5 text-[10px] font-mono font-black uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                  activeTab === "audio"
+                    ? "bg-secondary text-white shadow-[2px_2px_0px_#000]"
+                    : "text-neutral-400 hover:text-white hover:bg-neutral-900"
+                }`}
+              >
+                <Music className="w-3.5 h-3.5 text-pink-400" />
+                <span>🎵 Audio Track</span>
+              </button>
+            </>
+          )}
           
-          <button
-            type="button"
-            onClick={() => setActiveTab("audio")}
-            className={`flex-1 xl:flex-initial px-5 py-2.5 text-[10px] font-mono font-black uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-2 ${
-              activeTab === "audio"
-                ? "bg-secondary text-white shadow-[2px_2px_0px_#000]"
-                : "text-neutral-400 hover:text-white hover:bg-neutral-900"
-            }`}
-          >
-            <Music className="w-3.5 h-3.5 text-pink-400" />
-            <span>🎵 Audio Track</span>
-          </button>
-          
-          <button
-            type="button"
-            onClick={() => { setActiveTab("photo"); stopSynthPreview(); }}
-            className={`flex-1 xl:flex-initial px-5 py-2.5 text-[10px] font-mono font-black uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-2 ${
-              activeTab === "photo"
-                ? "bg-secondary text-white shadow-[2px_2px_0px_#000]"
-                : "text-neutral-400 hover:text-white hover:bg-neutral-900"
-            }`}
-          >
-            <FileImage className="w-3.5 h-3.5 text-emerald-400" />
-            <span>🎨 AI Smart Photo</span>
-          </button>
+          {extractionMode === "photo" && (
+            <button
+              type="button"
+              onClick={() => { setActiveTab("photo"); stopSynthPreview(); }}
+              className={`flex-1 xl:flex-initial px-5 py-2.5 text-[10px] font-mono font-black uppercase tracking-wider cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                activeTab === "photo"
+                  ? "bg-secondary text-white shadow-[2px_2px_0px_#000]"
+                  : "text-neutral-400 hover:text-white hover:bg-neutral-900"
+              }`}
+            >
+              <FileImage className="w-3.5 h-3.5 text-emerald-400" />
+              <span>🎨 AI Smart Photo</span>
+            </button>
+          )}
         </div>
       </div>
 

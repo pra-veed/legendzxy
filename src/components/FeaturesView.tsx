@@ -1959,21 +1959,23 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
             </div>
 
             {/* Interactive Stream Simulator Loaded with the exact user URL result */}
-            <VideoPreviewSimulator 
-              url={url}
-              title={extractedData.title}
-              thumbnailUrl={extractedData.thumbnailUrl}
-              channel={extractedData.channel}
-              views={extractedData.views}
-              duration={extractedData.duration}
-              videoFilter={videoFilter}
-              aspectRatio={aspectRatio}
-              watermarkText={watermarkText}
-              aiPhotoEffect={aiPhotoEffect}
-            />
+            {extractionMode !== "post" && (
+              <VideoPreviewSimulator 
+                url={url}
+                title={extractedData.title}
+                thumbnailUrl={extractedData.thumbnailUrl}
+                channel={extractedData.channel}
+                views={extractedData.views}
+                duration={extractedData.duration}
+                videoFilter={videoFilter}
+                aspectRatio={aspectRatio}
+                watermarkText={watermarkText}
+                aiPhotoEffect={aiPhotoEffect}
+              />
+            )}
 
             {/* Dynamic Preservative Workspace Editors */}
-            {status === "results" && (
+            {status === "results" && extractionMode !== "post" && (
               <MediaWorkspace 
                 url={url}
                 title={extractedData.title}
@@ -1986,284 +1988,297 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                 onAiPhotoEffectChange={setAiPhotoEffect}
                 videoFormat={videoFormat}
                 photoFormat={photoFormat}
+                extractionMode={extractionMode}
               />
             )}
 
             {/* Download Options Block */}
             {status === "results" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+              <div className={`grid grid-cols-1 ${
+                extractionMode === "media" 
+                  ? "md:grid-cols-2" 
+                  : "max-w-2xl mx-auto w-full"
+              } gap-6`}>
                 {/* Video Checkbox Panel */}
-                <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
-                      <FileVideo className="text-secondary w-4 h-4" />
-                      <h3 className="font-serif font-semibold text-base text-on-surface">Video Plate Options</h3>
-                    </div>
-                    <div className="space-y-2">
-                      {extractedData.videoOptions.map((opt) => (
-                        <label 
-                          key={opt.id}
-                          className={`flex items-center justify-between p-3 rounded-none border cursor-pointer transition-all ${
-                            selectedVideo === opt.id 
-                              ? "bg-background border-primary shadow-[2px_2px_0px_#1b222c]" 
-                              : "border-transparent hover:bg-background/50 hover:border-outline-variant"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <input 
-                              type="radio" 
-                              name="video_opt"
-                              checked={selectedVideo === opt.id}
-                              onChange={() => setSelectedVideo(opt.id)}
-                              className="w-4 h-4 text-primary accent-primary cursor-pointer rounded-none"
-                            />
-                            <span className="text-xs font-mono font-bold text-on-surface uppercase tracking-wider">{opt.label}</span>
-                          </div>
-                          <span className="text-xs font-mono text-on-surface-variant">{opt.size}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-primary/20">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
-                      Target Export Format
-                    </label>
-                    <select
-                      value={videoFormat}
-                      onChange={(e) => setVideoFormat(e.target.value as "MP4" | "WEBM" | "MKV" | "MOV" | "MP3")}
-                      className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
-                    >
-                      <option value="MP4">MP4 Video Container (.mp4)</option>
-                      <option value="MOV">MOV QuickTime Video (.mov)</option>
-                      <option value="MP3">MP3 Audio Stream (.mp3)</option>
-                      <option value="WEBM">WEBM Web Media (.webm)</option>
-                      <option value="MKV">MKV Matroska Stream (.mkv)</option>
-                    </select>
-                  </div>
-
-                  {/* High-Fidelity Custom Range Trim Interface */}
-                  <div className="mt-4 pt-4 border-t border-primary/20 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block font-bold">
-                        Video Segment Trimmer
-                      </label>
-                      <span className="text-[8px] font-mono bg-secondary/15 text-secondary px-1.5 py-0.5 rounded-none font-bold">PRECISION</span>
-                    </div>
-
-                    <label className="flex items-center gap-2 cursor-pointer select-none">
-                      <input 
-                        type="checkbox"
-                        checked={enableTrim}
-                        onChange={(e) => setEnableTrim(e.target.checked)}
-                        className="w-4 h-4 accent-secondary cursor-pointer rounded-none"
-                      />
-                      <span className="text-xs font-mono text-on-surface uppercase font-bold tracking-wide">Enable Custom Range</span>
-                    </label>
-
-                    {enableTrim && (
-                      <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        className="space-y-3 pt-1 overflow-hidden"
-                      >
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="space-y-1">
-                            <label className="text-[9px] font-mono uppercase text-on-surface-variant block font-bold">Start Frame</label>
-                            <input 
-                              type="text" 
-                              value={trimStart}
-                              onChange={(e) => setTrimStart(e.target.value)}
-                              placeholder="00:00"
-                              className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-2.5 py-2 focus:border-primary focus:outline-none rounded-none text-center"
-                            />
-                          </div>
-                          <div className="space-y-1">
-                            <label className="text-[9px] font-mono uppercase text-on-surface-variant block font-bold">End Frame</label>
-                            <input 
-                              type="text" 
-                              value={trimEnd}
-                              onChange={(e) => setTrimEnd(e.target.value)}
-                              placeholder="02:30"
-                              className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-2.5 py-2 focus:border-primary focus:outline-none rounded-none text-center"
-                            />
-                          </div>
-                        </div>
-                        <p className="text-[9px] font-mono text-on-surface-variant/70 uppercase leading-snug">
-                          Format matches video timeline index (e.g. 01:15 or 12:45). Limits stream buffer prior to sealing.
-                        </p>
-                      </motion.div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Audio Checkbox Panel */}
-                <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
-                      <Music className="text-secondary w-4 h-4" />
-                      <h3 className="font-serif font-semibold text-base text-on-surface">Audio Preservation</h3>
-                    </div>
-                    <div className="space-y-2">
-                      {extractedData.audioOptions.map((opt) => (
-                        <label 
-                          key={opt.id}
-                          className={`flex items-center justify-between p-3 rounded-none border cursor-pointer transition-all ${
-                            selectedAudio === opt.id 
-                              ? "bg-background border-secondary shadow-[2px_2px_0px_#4f5e7c]" 
-                              : "border-transparent hover:bg-background/50 hover:border-outline-variant"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <input 
-                              type="radio" 
-                              name="audio_opt"
-                              checked={selectedAudio === opt.id}
-                              onChange={() => setSelectedAudio(opt.id)}
-                              className="w-4 h-4 text-secondary accent-secondary cursor-pointer"
-                            />
-                            <span className="text-xs font-mono font-bold text-on-surface uppercase tracking-wider">{opt.label}</span>
-                          </div>
-                          <span className="text-xs font-mono text-on-surface-variant">{opt.size}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-primary/20">
-                    <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
-                      Codec Bitrate Format
-                    </label>
-                    <select
-                      value={selectedAudio}
-                      onChange={(e) => setSelectedAudio(e.target.value)}
-                      className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
-                    >
-                      <option value="320kbps">MP3 Format - 320kbps Lossy</option>
-                      <option value="256kbps">AAC Format - 256kbps Studio</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Photo Downloader Panel */}
-                <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
-                      <FileImage className="text-secondary w-4 h-4" />
-                      <h3 className="font-serif font-semibold text-base text-on-surface">Photo Downloader</h3>
-                    </div>
-                    <p className="text-xs font-mono text-on-surface-variant mb-4 leading-normal">
-                      Extract high-definition video cover arts, profiles, or static graphics instantly from URL source targets with custom premium resolution scaling.
-                    </p>
-                    
-                    <div className="space-y-4 mb-4">
-                      <div>
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
-                          Target Export Format
-                        </label>
-                        <select
-                          value={photoFormat}
-                          onChange={(e) => setPhotoFormat(e.target.value as "PNG" | "WEBP" | "JPEG")}
-                          className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
-                        >
-                          <option value="JPEG">JPEG Image Standard (.jpg)</option>
-                          <option value="PNG">PNG Lossless Transparency (.png)</option>
-                          <option value="WEBP">WEBP Modern Compress (.webp)</option>
-                        </select>
+                {extractionMode === "media" && (
+                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
+                        <FileVideo className="text-secondary w-4 h-4" />
+                        <h3 className="font-serif font-semibold text-base text-on-surface">Video Plate Options</h3>
                       </div>
-
-                      <div>
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
-                          Premium Scale & Quality
-                        </label>
-                        <select
-                          value={photoResolution}
-                          onChange={(e) => setPhotoResolution(e.target.value as "4K" | "2K" | "1080P" | "720P")}
-                          className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
-                        >
-                          <option value="4K">4K Ultra HD (3840 x 2160) [AI Master]</option>
-                          <option value="2K">2K Quad HD (2560 x 1440) [Premium]</option>
-                          <option value="1080P">Full HD (1920 x 1080) [High Res]</option>
-                          <option value="720P">Standard HD (1280 x 720) [Standard]</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => downloadPhotoAsFormat(extractedData.thumbnailUrl, extractedData.title, photoFormat, photoResolution)}
-                      className="w-full py-3 bg-secondary hover:bg-primary text-white hover:text-on-primary font-mono text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer text-center rounded-none shadow-[2px_2px_0px_#1b222c] flex items-center justify-center gap-1.5 active:scale-95"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>DOWNLOAD {photoResolution} PHOTO ({photoFormat})</span>
-                    </button>
-                    <span className="text-[9px] font-mono text-on-surface-variant/70 text-center block">
-                      {photoFormat === "JPEG" ? "JPEG Format" : photoFormat === "PNG" ? "PNG Format" : "WEBP Format"} • {photoResolution === "4K" ? "3840x2160" : photoResolution === "2K" ? "2560x1440" : photoResolution === "1080P" ? "1920x1080" : "1280x720"} Grid Native • 100% Free
-                    </span>
-                  </div>
-                </div>
-
-                {/* Post Narrative Downloader Panel */}
-                <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
-                      <FileText className="text-secondary w-4 h-4" />
-                      <h3 className="font-serif font-semibold text-base text-on-surface">Post Narrative</h3>
-                    </div>
-                    <p className="text-xs font-mono text-on-surface-variant mb-4 leading-normal">
-                      Export full post narrative text, AI transcript summaries, hashtags, and engagement logs to universally compatible documents.
-                    </p>
-
-                    <div className="space-y-4 mb-4">
-                      <div>
-                        <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
-                          Document Export Format
-                        </label>
-                        <select
-                          value={postFormat}
-                          onChange={(e) => setPostFormat(e.target.value as "PDF" | "TXT" | "JSON")}
-                          className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
-                        >
-                          <option value="PDF">Universal PDF Document (.pdf)</option>
-                          <option value="TXT">Plain Text Clean Transcript (.txt)</option>
-                          <option value="JSON">Structured JSON Metadata (.json)</option>
-                        </select>
-                      </div>
-
-                      {extractedData.postContent && (
-                        <div>
-                          <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold flex justify-between">
-                            <span>Live Content Preview</span>
-                            <span className="text-[9px] text-[#2c3e50]/60 normal-case">(Editable)</span>
+                      <div className="space-y-2">
+                        {extractedData.videoOptions.map((opt) => (
+                          <label 
+                            key={opt.id}
+                            className={`flex items-center justify-between p-3 rounded-none border cursor-pointer transition-all ${
+                              selectedVideo === opt.id 
+                                ? "bg-background border-primary shadow-[2px_2px_0px_#1b222c]" 
+                                : "border-transparent hover:bg-background/50 hover:border-outline-variant"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <input 
+                                type="radio" 
+                                name="video_opt"
+                                checked={selectedVideo === opt.id}
+                                onChange={() => setSelectedVideo(opt.id)}
+                                className="w-4 h-4 text-primary accent-primary cursor-pointer rounded-none"
+                              />
+                              <span className="text-xs font-mono font-bold text-on-surface uppercase tracking-wider">{opt.label}</span>
+                            </div>
+                            <span className="text-xs font-mono text-on-surface-variant">{opt.size}</span>
                           </label>
-                          <textarea
-                            value={extractedData.postContent}
-                            onChange={(e) => setExtractedData(prev => ({ ...prev, postContent: e.target.value }))}
-                            className="w-full h-24 bg-background border border-outline-variant rounded-none p-2 font-mono text-[9px] leading-normal text-on-surface focus:outline-none focus:border-primary resize-none"
-                          />
-                        </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-primary/20">
+                      <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
+                        Target Export Format
+                      </label>
+                      <select
+                        value={videoFormat}
+                        onChange={(e) => setVideoFormat(e.target.value as "MP4" | "WEBM" | "MKV" | "MOV" | "MP3")}
+                        className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
+                      >
+                        <option value="MP4">MP4 Video Container (.mp4)</option>
+                        <option value="MOV">MOV QuickTime Video (.mov)</option>
+                        <option value="MP3">MP3 Audio Stream (.mp3)</option>
+                        <option value="WEBM">WEBM Web Media (.webm)</option>
+                        <option value="MKV">MKV Matroska Stream (.mkv)</option>
+                      </select>
+                    </div>
+
+                    {/* High-Fidelity Custom Range Trim Interface */}
+                    <div className="mt-4 pt-4 border-t border-primary/20 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block font-bold">
+                          Video Segment Trimmer
+                        </label>
+                        <span className="text-[8px] font-mono bg-secondary/15 text-secondary px-1.5 py-0.5 rounded-none font-bold">PRECISION</span>
+                      </div>
+
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <input 
+                          type="checkbox"
+                          checked={enableTrim}
+                          onChange={(e) => setEnableTrim(e.target.checked)}
+                          className="w-4 h-4 accent-secondary cursor-pointer rounded-none"
+                        />
+                        <span className="text-xs font-mono text-on-surface uppercase font-bold tracking-wide">Enable Custom Range</span>
+                      </label>
+
+                      {enableTrim && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          className="space-y-3 pt-1 overflow-hidden"
+                        >
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="space-y-1">
+                              <label className="text-[9px] font-mono uppercase text-on-surface-variant block font-bold">Start Frame</label>
+                              <input 
+                                type="text" 
+                                value={trimStart}
+                                onChange={(e) => setTrimStart(e.target.value)}
+                                placeholder="00:00"
+                                className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-2.5 py-2 focus:border-primary focus:outline-none rounded-none text-center"
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[9px] font-mono uppercase text-on-surface-variant block font-bold">End Frame</label>
+                              <input 
+                                type="text" 
+                                value={trimEnd}
+                                onChange={(e) => setTrimEnd(e.target.value)}
+                                placeholder="02:30"
+                                className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-2.5 py-2 focus:border-primary focus:outline-none rounded-none text-center"
+                              />
+                            </div>
+                          </div>
+                          <p className="text-[9px] font-mono text-on-surface-variant/70 uppercase leading-snug">
+                            Format matches video timeline index (e.g. 01:15 or 12:45). Limits stream buffer prior to sealing.
+                          </p>
+                        </motion.div>
                       )}
                     </div>
                   </div>
+                )}
 
-                  <div className="space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => downloadPostNarrative(extractedData.title, extractedData.postContent || "", postFormat)}
-                      className="w-full py-3 bg-secondary hover:bg-primary text-white hover:text-on-primary font-mono text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer text-center rounded-none shadow-[2px_2px_0px_#1b222c] flex items-center justify-center gap-1.5 active:scale-95"
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>DOWNLOAD {postFormat} DOCUMENT</span>
-                    </button>
-                    <span className="text-[9px] font-mono text-on-surface-variant/70 text-center block">
-                      Cross-Platform Compatible • No Watermarks • {postFormat === "PDF" ? "ISO standard layout" : postFormat === "TXT" ? "Universal Text" : "Standard Metadata Object"}
-                    </span>
+                {/* Audio Checkbox Panel */}
+                {extractionMode === "media" && (
+                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
+                        <Music className="text-secondary w-4 h-4" />
+                        <h3 className="font-serif font-semibold text-base text-on-surface">Audio Preservation</h3>
+                      </div>
+                      <div className="space-y-2">
+                        {extractedData.audioOptions.map((opt) => (
+                          <label 
+                            key={opt.id}
+                            className={`flex items-center justify-between p-3 rounded-none border cursor-pointer transition-all ${
+                              selectedAudio === opt.id 
+                                ? "bg-background border-secondary shadow-[2px_2px_0px_#4f5e7c]" 
+                                : "border-transparent hover:bg-background/50 hover:border-outline-variant"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <input 
+                                type="radio" 
+                                name="audio_opt"
+                                checked={selectedAudio === opt.id}
+                                onChange={() => setSelectedAudio(opt.id)}
+                                className="w-4 h-4 text-secondary accent-secondary cursor-pointer"
+                              />
+                              <span className="text-xs font-mono font-bold text-on-surface uppercase tracking-wider">{opt.label}</span>
+                            </div>
+                            <span className="text-xs font-mono text-on-surface-variant">{opt.size}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-primary/20">
+                      <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
+                        Codec Bitrate Format
+                      </label>
+                      <select
+                        value={selectedAudio}
+                        onChange={(e) => setSelectedAudio(e.target.value)}
+                        className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
+                      >
+                        <option value="320kbps">MP3 Format - 320kbps Lossy</option>
+                        <option value="256kbps">AAC Format - 256kbps Studio</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* Photo Downloader Panel */}
+                {extractionMode === "photo" && (
+                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
+                        <FileImage className="text-secondary w-4 h-4" />
+                        <h3 className="font-serif font-semibold text-base text-on-surface">Photo Downloader</h3>
+                      </div>
+                      <p className="text-xs font-mono text-on-surface-variant mb-4 leading-normal">
+                        Extract high-definition video cover arts, profiles, or static graphics instantly from URL source targets with custom premium resolution scaling.
+                      </p>
+                      
+                      <div className="space-y-4 mb-4">
+                        <div>
+                          <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
+                            Target Export Format
+                          </label>
+                          <select
+                            value={photoFormat}
+                            onChange={(e) => setPhotoFormat(e.target.value as "PNG" | "WEBP" | "JPEG")}
+                            className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
+                          >
+                            <option value="JPEG">JPEG Image Standard (.jpg)</option>
+                            <option value="PNG">PNG Lossless Transparency (.png)</option>
+                            <option value="WEBP">WEBP Modern Compress (.webp)</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
+                            Premium Scale & Quality
+                          </label>
+                          <select
+                            value={photoResolution}
+                            onChange={(e) => setPhotoResolution(e.target.value as "4K" | "2K" | "1080P" | "720P")}
+                            className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
+                          >
+                            <option value="4K">4K Ultra HD (3840 x 2160) [AI Master]</option>
+                            <option value="2K">2K Quad HD (2560 x 1440) [Premium]</option>
+                            <option value="1080P">Full HD (1920 x 1080) [High Res]</option>
+                            <option value="720P">Standard HD (1280 x 720) [Standard]</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <button
+                        type="button"
+                        onClick={() => downloadPhotoAsFormat(extractedData.thumbnailUrl, extractedData.title, photoFormat, photoResolution)}
+                        className="w-full py-3 bg-secondary hover:bg-primary text-white hover:text-on-primary font-mono text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer text-center rounded-none shadow-[2px_2px_0px_#1b222c] flex items-center justify-center gap-1.5 active:scale-95"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>DOWNLOAD {photoResolution} PHOTO ({photoFormat})</span>
+                      </button>
+                      <span className="text-[9px] font-mono text-on-surface-variant/70 text-center block">
+                        {photoFormat === "JPEG" ? "JPEG Format" : photoFormat === "PNG" ? "PNG Format" : "WEBP Format"} • {photoResolution === "4K" ? "3840x2160" : photoResolution === "2K" ? "2560x1440" : photoResolution === "1080P" ? "1920x1080" : "1280x720"} Grid Native • 100% Free
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Post Narrative Downloader Panel */}
+                {extractionMode === "post" && (
+                  <div className="bg-[#e4eaf0] border border-primary rounded-none p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-4 border-b border-primary/20 pb-3">
+                        <FileText className="text-secondary w-4 h-4" />
+                        <h3 className="font-serif font-semibold text-base text-on-surface">Post Narrative</h3>
+                      </div>
+                      <p className="text-xs font-mono text-on-surface-variant mb-4 leading-normal">
+                        Export full post narrative text, AI transcript summaries, hashtags, and engagement logs to universally compatible documents.
+                      </p>
+
+                      <div className="space-y-4 mb-4">
+                        <div>
+                          <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold">
+                            Document Export Format
+                          </label>
+                          <select
+                            value={postFormat}
+                            onChange={(e) => setPostFormat(e.target.value as "PDF" | "TXT" | "JSON")}
+                            className="w-full bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2.5 focus:border-primary focus:outline-none cursor-pointer rounded-none"
+                          >
+                            <option value="PDF">Universal PDF Document (.pdf)</option>
+                            <option value="TXT">Plain Text Clean Transcript (.txt)</option>
+                            <option value="JSON">Structured JSON Metadata (.json)</option>
+                          </select>
+                        </div>
+
+                        {extractedData.postContent && (
+                          <div>
+                            <label className="text-[10px] font-mono uppercase tracking-wider text-on-surface-variant block mb-1.5 font-bold flex justify-between">
+                              <span>Live Content Preview</span>
+                              <span className="text-[9px] text-[#2c3e50]/60 normal-case">(Editable)</span>
+                            </label>
+                            <textarea
+                              value={extractedData.postContent}
+                              onChange={(e) => setExtractedData(prev => ({ ...prev, postContent: e.target.value }))}
+                              className="w-full h-24 bg-background border border-outline-variant rounded-none p-2 font-mono text-[9px] leading-normal text-on-surface focus:outline-none focus:border-primary resize-none"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <button
+                        type="button"
+                        onClick={() => downloadPostNarrative(extractedData.title, extractedData.postContent || "", postFormat)}
+                        className="w-full py-3 bg-secondary hover:bg-primary text-white hover:text-on-primary font-mono text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer text-center rounded-none shadow-[2px_2px_0px_#1b222c] flex items-center justify-center gap-1.5 active:scale-95"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>DOWNLOAD {postFormat} DOCUMENT</span>
+                      </button>
+                      <span className="text-[9px] font-mono text-on-surface-variant/70 text-center block">
+                        Cross-Platform Compatible • No Watermarks • {postFormat === "PDF" ? "ISO standard layout" : postFormat === "TXT" ? "Universal Text" : "Standard Metadata Object"}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Operating System Compatibility & Native Preset Selector */}
-            {status === "results" && (
+            {status === "results" && extractionMode === "media" && (
               <div className="bg-[#e4eaf0] border border-primary p-6 mt-6 shadow-[4px_4px_0px_rgba(26,26,26,0.15)] text-left">
                 <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-primary/20 pb-4 mb-4">
                   <div>
