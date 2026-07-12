@@ -57,7 +57,6 @@ export default function AiCreativeLab({ onTriggerAlert, user, authLoading }: AiC
       await signInWithGoogle();
       onTriggerAlert("Welcome back!", "Successfully signed in via Google Secure Authentication.");
     } catch (err: any) {
-      console.error("Sign-In Error in AiCreativeLab:", err);
       // Check if it is an unauthorized domain error (common when deploying to Vercel/Netlify/custom domains)
       const isUnauthorizedDomain = err.code === "auth/unauthorized-domain" || 
                                     err.message?.includes("unauthorized-domain") || 
@@ -69,6 +68,12 @@ export default function AiCreativeLab({ onTriggerAlert, user, authLoading }: AiC
                            err.code === "auth/cancelled-popup-request" ||
                            err.message?.includes("closed") || 
                            err.message?.includes("popup");
+      
+      if (isPopupError) {
+        console.warn("Sign-In popup closed or cancelled by user, caught in AiCreativeLab:", err);
+      } else {
+        console.error("Sign-In Error in AiCreativeLab:", err);
+      }
       
       if (isUnauthorizedDomain) {
         onTriggerAlert(
