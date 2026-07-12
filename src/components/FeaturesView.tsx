@@ -1193,40 +1193,49 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-1 bg-background/50 p-1 border border-primary/10 w-fit">
-                      <span className="text-[9px] font-mono font-bold text-primary/70 uppercase px-2">Target Asset:</span>
+                    <div className="flex flex-wrap items-center gap-1.5 bg-[#e4e2f2]/60 dark:bg-[#101738]/60 p-1.5 border border-primary/20 w-fit">
+                      <span className="text-[9px] font-mono font-bold text-primary/70 uppercase px-2 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-secondary animate-pulse" />
+                        <span>PRO EXTRACTIONS:</span>
+                      </span>
                       <button
                         type="button"
                         onClick={() => setExtractionMode("media")}
-                        className={`px-3 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none ${
+                        className={`px-3.5 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none flex items-center gap-1.5 ${
                           extractionMode === "media"
-                            ? "bg-secondary text-white font-black shadow-[1.5px_1.5px_0px_#1b222c]"
-                            : "text-on-surface-variant/80 hover:text-primary"
+                            ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black shadow-[2px_2px_0px_#1b222c] border border-blue-400"
+                            : "text-on-surface-variant hover:text-blue-600 dark:hover:text-blue-400 bg-background/40 hover:bg-background/80"
                         }`}
                       >
-                        Video & Audio
+                        <FileVideo className="w-3.5 h-3.5" />
+                        <span>Video & Audio</span>
+                        <span className="text-[7px] font-mono bg-blue-100 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 px-1 py-0.2 rounded-none font-extrabold">PRO</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setExtractionMode("photo")}
-                        className={`px-3 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none ${
+                        className={`px-3.5 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none flex items-center gap-1.5 ${
                           extractionMode === "photo"
-                            ? "bg-secondary text-white font-black shadow-[1.5px_1.5px_0px_#1b222c]"
-                            : "text-on-surface-variant/80 hover:text-primary"
+                            ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black shadow-[2px_2px_0px_#1b222c] border border-emerald-400"
+                            : "text-on-surface-variant hover:text-emerald-600 dark:hover:text-emerald-400 bg-background/40 hover:bg-background/80"
                         }`}
                       >
-                        Photo / Cover
+                        <FileImage className="w-3.5 h-3.5" />
+                        <span>Photo / Cover</span>
+                        <span className="text-[7px] font-mono bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 px-1 py-0.2 rounded-none font-extrabold">PRO</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setExtractionMode("post")}
-                        className={`px-3 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none ${
+                        className={`px-3.5 py-1.5 text-[9px] font-sans font-bold uppercase tracking-wider transition-all cursor-pointer rounded-none flex items-center gap-1.5 ${
                           extractionMode === "post"
-                            ? "bg-secondary text-white font-black shadow-[1.5px_1.5px_0px_#1b222c]"
-                            : "text-on-surface-variant/80 hover:text-primary"
+                            ? "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white font-black shadow-[2px_2px_0px_#1b222c] border border-pink-400"
+                            : "text-on-surface-variant hover:text-fuchsia-600 dark:hover:text-fuchsia-400 bg-background/40 hover:bg-background/80"
                         }`}
                       >
-                        Posts
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Posts</span>
+                        <span className="text-[7px] font-mono bg-fuchsia-100 dark:bg-fuchsia-950/50 text-fuchsia-800 dark:text-fuchsia-300 px-1 py-0.2 rounded-none font-extrabold">PRO</span>
                       </button>
                     </div>
                   </div>
@@ -1558,28 +1567,28 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Feature 1: Showcase Pinboard */}
-                    <div className="bg-[#f2f5f8]/80 dark:bg-[#121826]/30 border border-primary/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all duration-300 shadow-sm group">
+                    <div className="bg-rose-500/[0.04] dark:bg-rose-950/10 border border-rose-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-rose-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(244,63,94,0.08)] hover:shadow-[4px_4px_0px_#f43f5e] group">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-background border border-primary/20 flex items-center justify-center text-secondary">
-                            <Sparkles className="w-4 h-4 text-secondary" />
+                          <div className="w-9 h-9 bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500">
+                            <Sparkles className="w-4 h-4 text-rose-500" />
                           </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-secondary uppercase bg-secondary/10 px-2 py-0.5 border border-secondary/25">
+                          <span className="text-[8px] font-mono font-bold tracking-widest text-rose-600 dark:text-rose-400 uppercase bg-rose-500/10 px-2 py-0.5 border border-rose-500/25">
                             CURATED ARCHIVE
                           </span>
                         </div>
                         <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-primary">Pinterest Premium Showcase</h3>
+                          <h3 className="font-serif font-bold text-base text-rose-700 dark:text-rose-400">Pinterest Premium Showcase</h3>
                           <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
                             Discover the ultimate gallery of upscaled artwork, lossless cover preserves, and digital archives with resolution overlays.
                           </p>
                         </div>
                       </div>
-                      <div className="mt-6 pt-4 border-t border-primary/10">
+                      <div className="mt-6 pt-4 border-t border-rose-500/10">
                         <button
                           type="button"
                           onClick={() => setActiveTab?.("showcase")}
-                          className="w-full py-2.5 bg-primary text-on-primary font-mono text-[9px] font-bold uppercase tracking-wider hover:bg-secondary cursor-pointer transition-all duration-150 rounded-none shadow-[2px_2px_0px_var(--color-secondary)] hover:shadow-none flex items-center justify-center gap-1.5"
+                          className="w-full py-2.5 bg-rose-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider hover:bg-rose-700 cursor-pointer transition-all duration-150 rounded-none shadow-[2px_2px_0px_#9f1239] hover:shadow-none flex items-center justify-center gap-1.5"
                         >
                           <span>Explore Showcase Board</span>
                           <span>→</span>
@@ -1588,121 +1597,121 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                     </div>
 
                     {/* Feature 2: Social Broadcast Matrix */}
-                    <div className="bg-[#f2f5f8]/80 dark:bg-[#121826]/30 border border-primary/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all duration-300 shadow-sm group">
+                    <div className="bg-sky-500/[0.04] dark:bg-sky-950/10 border border-sky-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-sky-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(14,165,233,0.08)] hover:shadow-[4px_4px_0px_#0ea5e9] group">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-background border border-primary/20 flex items-center justify-center text-secondary">
-                            <Zap className="w-4 h-4 text-secondary" />
+                          <div className="w-9 h-9 bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-500">
+                            <Zap className="w-4 h-4 text-sky-500" />
                           </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-primary/70 uppercase bg-primary/5 px-2 py-0.5 border border-primary/10">
+                          <span className="text-[8px] font-mono font-bold tracking-widest text-sky-600 dark:text-sky-400 uppercase bg-sky-500/10 px-2 py-0.5 border border-sky-500/25">
                             DIRECT BROADCAST
                           </span>
                         </div>
                         <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-primary">Social Media Sharing Matrix</h3>
+                          <h3 className="font-serif font-bold text-base text-sky-700 dark:text-sky-400">Social Media Sharing Matrix</h3>
                           <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
                             Dispatch your high-fidelity captures straight to Twitter/X and LinkedIn directly from the post-extraction details with auto-generated text copy.
                           </p>
                         </div>
                       </div>
-                      <div className="mt-6 text-[9px] font-mono font-semibold text-on-surface-variant/70 italic flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                      <div className="mt-6 text-[9px] font-mono font-semibold text-sky-600 dark:text-sky-400 italic flex items-center gap-1.5 border-t border-sky-500/10 pt-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-sky-500 inline-block animate-pulse"></span>
                         <span>Fully integrated in results drawer</span>
                       </div>
                     </div>
 
                     {/* Feature 3: Visual Customization Sandbox */}
-                    <div className="bg-[#f2f5f8]/80 dark:bg-[#121826]/30 border border-primary/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all duration-300 shadow-sm group">
+                    <div className="bg-amber-500/[0.04] dark:bg-amber-950/10 border border-amber-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-amber-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(245,158,11,0.08)] hover:shadow-[4px_4px_0px_#f59e0b] group">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-background border border-primary/20 flex items-center justify-center text-secondary">
-                            <Tv className="w-4 h-4 text-secondary" />
+                          <div className="w-9 h-9 bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                            <Tv className="w-4 h-4 text-amber-500" />
                           </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-primary/70 uppercase bg-primary/5 px-2 py-0.5 border border-primary/10">
+                          <span className="text-[8px] font-mono font-bold tracking-widest text-amber-600 dark:text-amber-400 uppercase bg-amber-500/10 px-2 py-0.5 border border-amber-500/25">
                             ACTIVE WORKSPACE
                           </span>
                         </div>
                         <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-primary">Visual Sandbox & Editors</h3>
+                          <h3 className="font-serif font-bold text-base text-amber-700 dark:text-amber-400">Visual Sandbox & Editors</h3>
                           <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
                             Modify media streams on-the-fly. Select precise crop bounds (16:9, 9:16, 1:1), add visual watermarks, and overlay cinema-grade monochrome/noir filters.
                           </p>
                         </div>
                       </div>
-                      <div className="mt-6 text-[9px] font-mono font-semibold text-on-surface-variant/70 italic flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>
+                      <div className="mt-6 text-[9px] font-mono font-semibold text-amber-600 dark:text-amber-400 italic flex items-center gap-1.5 border-t border-amber-500/10 pt-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block"></span>
                         <span>Locks onto stream container after paste</span>
                       </div>
                     </div>
 
                     {/* Feature 4: Multi-Format Document Exporter */}
-                    <div className="bg-[#f2f5f8]/80 dark:bg-[#121826]/30 border border-primary/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all duration-300 shadow-sm group">
+                    <div className="bg-emerald-500/[0.04] dark:bg-emerald-950/10 border border-emerald-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-emerald-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(16,185,129,0.08)] hover:shadow-[4px_4px_0px_#10b981] group">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-background border border-primary/20 flex items-center justify-center text-secondary">
-                            <Download className="w-4 h-4 text-secondary" />
+                          <div className="w-9 h-9 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-500">
+                            <Download className="w-4 h-4 text-emerald-500" />
                           </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-primary/70 uppercase bg-primary/5 px-2 py-0.5 border border-primary/10">
+                          <span className="text-[8px] font-mono font-bold tracking-widest text-emerald-600 dark:text-emerald-400 uppercase bg-emerald-500/10 px-2 py-0.5 border border-emerald-500/25">
                             LOSSLESS FORMATS
                           </span>
                         </div>
                         <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-primary">Formatted Document Suite</h3>
+                          <h3 className="font-serif font-bold text-base text-emerald-700 dark:text-emerald-400">Formatted Document Suite</h3>
                           <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
                             Convert stream captions and visual descriptions into elegantly structured PDF narrative documents, clean plain text files, or raw JSON metadata logs.
                           </p>
                         </div>
                       </div>
-                      <div className="mt-6 text-[9px] font-mono font-semibold text-on-surface-variant/70 italic flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>
+                      <div className="mt-6 text-[9px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 italic flex items-center gap-1.5 border-t border-emerald-500/10 pt-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
                         <span>Available in single target detail view</span>
                       </div>
                     </div>
 
                     {/* Feature 5: Offline Preservation Cache */}
-                    <div className="bg-[#f2f5f8]/80 dark:bg-[#121826]/30 border border-primary/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all duration-300 shadow-sm group">
+                    <div className="bg-purple-500/[0.04] dark:bg-purple-950/10 border border-purple-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-purple-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(168,85,247,0.08)] hover:shadow-[4px_4px_0px_#a855f7] group">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-background border border-primary/20 flex items-center justify-center text-secondary">
-                            <History className="w-4 h-4 text-secondary" />
+                          <div className="w-9 h-9 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-500">
+                            <History className="w-4 h-4 text-purple-500" />
                           </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-primary/70 uppercase bg-primary/5 px-2 py-0.5 border border-primary/10">
+                          <span className="text-[8px] font-mono font-bold tracking-widest text-purple-600 dark:text-purple-400 uppercase bg-purple-500/10 px-2 py-0.5 border border-purple-500/25">
                             PERSISTENCE ENGINE
                           </span>
                         </div>
                         <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-primary">Offline Resilient Storage Cache</h3>
+                          <h3 className="font-serif font-bold text-base text-purple-700 dark:text-purple-400">Offline Resilient Storage Cache</h3>
                           <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
                             Never lose a high-fidelity capture. Staged bulk targets, completed extractions, and user histories automatically persist to client-side storage cache vaults.
                           </p>
                         </div>
                       </div>
-                      <div className="mt-6 text-[9px] font-mono font-semibold text-on-surface-variant/70 italic flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                      <div className="mt-6 text-[9px] font-mono font-semibold text-purple-600 dark:text-purple-400 italic flex items-center gap-1.5 border-t border-purple-500/10 pt-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-500 inline-block animate-pulse"></span>
                         <span>Synchronized automatically</span>
                       </div>
                     </div>
 
                     {/* Feature 6: Google Secure Cloud Profiles */}
-                    <div className="bg-[#f2f5f8]/80 dark:bg-[#121826]/30 border border-primary/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all duration-300 shadow-sm group">
+                    <div className="bg-indigo-500/[0.04] dark:bg-indigo-950/10 border border-indigo-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-indigo-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(99,102,241,0.08)] hover:shadow-[4px_4px_0px_#6366f1] group">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-background border border-primary/20 flex items-center justify-center text-secondary">
-                            <ShieldCheck className="w-4 h-4 text-secondary" />
+                          <div className="w-9 h-9 bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-500">
+                            <ShieldCheck className="w-4 h-4 text-indigo-500" />
                           </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-primary/70 uppercase bg-primary/5 px-2 py-0.5 border border-primary/10">
+                          <span className="text-[8px] font-mono font-bold tracking-widest text-indigo-600 dark:text-indigo-400 uppercase bg-indigo-500/10 px-2 py-0.5 border border-indigo-500/25">
                             USER ACCOUNTS
                           </span>
                         </div>
                         <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-primary">Secure Cloud Synchronizer</h3>
+                          <h3 className="font-serif font-bold text-base text-indigo-700 dark:text-indigo-400">Secure Cloud Synchronizer</h3>
                           <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
                             Sign in with Google to enable permanent multi-device history, active support bot triage lines, and personalized visual themes saved to Firestore.
                           </p>
                         </div>
                       </div>
-                      <div className="mt-6 text-[9px] font-mono font-semibold text-on-surface-variant/70 italic flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                      <div className="mt-6 text-[9px] font-mono font-semibold text-indigo-600 dark:text-indigo-400 italic flex items-center gap-1.5 border-t border-indigo-500/10 pt-4">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 inline-block animate-pulse"></span>
                         <span>Google Sign-In ready in top-right corner</span>
                       </div>
                     </div>

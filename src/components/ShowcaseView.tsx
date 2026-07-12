@@ -223,6 +223,109 @@ const PIN_ITEMS: Pin[] = [
   }
 ];
 
+const EXTRA_UNSPLASH_IDS = [
+  "photo-1509198397868-475647b2a1e5", // neon
+  "photo-1535223289827-42f1e9919769", // future
+  "photo-1478760329108-5c3ed9d495a0", // galaxy
+  "photo-1516259762381-22954d7d3ad2", // tech
+  "photo-1502657877623-f66bf489d236", // landscape
+  "photo-1547891654-e66ed7edd96c", // watercolor
+  "photo-1561736778-92e52a7769ef", // workspace
+  "photo-1501386761578-eac5c94b800a", // crowd music
+  "photo-1511671782779-c97d3d27a1d4", // podcast
+  "photo-1487180142328-0c4e37023af5", // abstract vinyl
+  "photo-1514525253161-7a46d19cd819", // party lights
+  "photo-1504280390367-361c6d9f38f4", // cozy campfire
+  "photo-1518609878373-06d740f60d8b", // neon show
+  "photo-1519681393784-d120267933ba", // starry peak
+  "photo-1520038410233-7141be7e6f97", // minimalist
+  "photo-1533174072545-7a4b6ad7a6c3", // purple dj
+  "photo-1531315630201-bb15abeb1653", // cyan futuristic
+  "photo-1557672172-298e090bd0f1", // fluid art
+  "photo-1550745165-9bc0b252726f", // retro gaming
+  "photo-1569336415962-a4bd9f69cd83", // synth wave sunrise
+  "photo-1579546929518-9e396f3cc809", // neon fluid gradient
+  "photo-1526374965328-7f61d4dc18c5", // digital green code matrix
+  "photo-1543852786-1cf6624b9987", // purple tokyo alley
+  "photo-1581091226825-a6a2a5aee158", // circuit board neon
+  "photo-1506157786151-b8491531f063", // psych music
+  "photo-1493225457124-a3eb161ffa5f", // vintage record deck
+  "photo-1513829096960-ef229e5230ab", // bar sign neon
+  "photo-1505740420928-5e560c06d30e", // headphones close up
+  "photo-1446776811953-b23d57bd21aa", // satellite earth
+  "photo-1451187580459-43490279c0fa", // internet hub
+  "photo-1484704849700-f032a568e944", // gramophone playing
+  "photo-1483475116795-752880d7012f", // hacker keyboard
+  "photo-1485827404703-89b55fcc595e", // sci-fi robot
+  "photo-1518173946687-a4c8a383392c", // macro leaf droplet
+  "photo-1524169358666-79f22534bc67", // prism scatter paint
+  "photo-1534447677768-be436bb09401", // dynamic light speed
+  "photo-1510915228340-29c85a43dcfe", // coder portrait dark
+  "photo-1516116211223-4c359a365de8", // mechanical keyboard glow
+  "photo-1542751371-adc38448a05e", // gaming setup keyboard
+  "photo-1551269901-5c5e14c25df7", // workspace loft setup
+  "photo-1567095761054-7a02e69e5c43", // abstract gold paint
+  "photo-1579783902614-a3fb3927b6a5", // vintage flowers retro
+  "photo-1513829096960-ef229e5230ab", // tokyo neon
+  "photo-1524169358666-79f22534bc67"  // colorful glass abstract
+];
+
+const generateUniquePin = (id: number, targetCategory?: string): Pin => {
+  const categories = ["Synthwave", "Podcast Art", "Lofi Beats", "Abstract & 3D", "Desktop Wallpapers"];
+  const cat = targetCategory && targetCategory !== "All" && targetCategory !== "Saved Board" 
+    ? targetCategory 
+    : categories[id % categories.length];
+
+  const artists = ["Extractile Labs AI", "Prism Digital Studio", "GridMaster Vector", "Lofi Beats Collective", "Matrix Dev Labs", "Spectral Chroma Studio", "Retro Future Collective", "Aether Wave Design"];
+  const artist = artists[(id * 7) % artists.length];
+
+  const avatars = [
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80"
+  ];
+  const avatar = avatars[id % avatars.length];
+
+  const titles = [
+    "Quantum Field Resonance", "Neon Alley Drift", "Sunset Highway Chill", "Retro Coding Space", "Geometric Prism Matrix",
+    "Cozy Library Study", "Holographic Wave Sound", "Celestial Space Terminal", "Cyber Lounge Ambient", "Retro Grid Pulse",
+    "Abstract Marbled Fluid", "Acoustic Forest Echo", "Vaporwave Cloud Burst", "Chrome Drift Runner", "Lofi Sunset Horizon",
+    "Prismatic Spectrum Flow", "Digital Circuit Horizon", "Deep Velvet Nebula", "Metropolitan Neon Sky", "Monastic Soundstage"
+  ];
+  const title = `${titles[id % titles.length]} #${id}`;
+
+  const imgId = EXTRA_UNSPLASH_IDS[(id - 1) % EXTRA_UNSPLASH_IDS.length];
+  const url = `https://images.unsplash.com/${imgId}?auto=format&fit=crop&w=1000&q=95&sig=${id}`;
+
+  const likes = 200 + ((id * 43) % 900);
+  const commentsCount = 8 + ((id * 9) % 60);
+
+  const descriptions = [
+    "An upscaled digital rendering depicting pristine atmospheric waves, engineered using Extractile's premium lossy-to-lossless scaling neural nodes.",
+    "A gorgeous community-contributed showcase piece. Optimized for ultra-high bitrate digital projection stream grids and custom vector scaling boards.",
+    "A captivating organic visual structure featuring rich chromatic saturation and geometric wireframe overlays. Rendered in pristine 4K resolution specs."
+  ];
+  const description = descriptions[id % descriptions.length];
+
+  const tags = [cat.split(" ")[0], "HighFidelity", "ProAsset", "UniqueCapture"];
+
+  return {
+    id,
+    title,
+    artist,
+    avatar,
+    category: cat,
+    resolution: "3840 x 2160 (4K UHD)",
+    url,
+    likes,
+    commentsCount,
+    description,
+    tags
+  };
+};
+
 const CATEGORIES = ["All", "Synthwave", "Podcast Art", "Lofi Beats", "Abstract & 3D", "Desktop Wallpapers", "Saved Board"];
 
 export default function ShowcaseView({ 
@@ -233,6 +336,10 @@ export default function ShowcaseView({
   // Search and Filtering
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Dynamic non-repeating pins state for infinite scroll
+  const [pins, setPins] = useState<Pin[]>(PIN_ITEMS);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // Interaction Storage Memory
   const [savedPinIds, setSavedPinIds] = useState<number[]>([]);
@@ -264,6 +371,40 @@ export default function ShowcaseView({
 
   // Custom Responsive Column Count Hook logic directly inside
   const [columnCount, setColumnCount] = useState(4);
+
+  // Load more function
+  const loadMorePins = () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+    setTimeout(() => {
+      setPins(prev => {
+        const nextBatch: Pin[] = [];
+        const baseId = prev.length + 1;
+        for (let i = 0; i < 12; i++) {
+          nextBatch.push(generateUniquePin(baseId + i));
+        }
+        return [...prev, ...nextBatch];
+      });
+      setLoadingMore(false);
+    }, 700);
+  };
+
+  // Window Scroll infinite loader
+  useEffect(() => {
+    const handleScroll = () => {
+      if (selectedCategory === "Saved Board") return; // No infinite scroll inside saved board
+      
+      const threshold = 150;
+      const position = window.innerHeight + window.scrollY;
+      const height = document.documentElement.scrollHeight;
+      
+      if (position >= height - threshold) {
+        loadMorePins();
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pins.length, loadingMore, selectedCategory]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -391,7 +532,7 @@ export default function ShowcaseView({
   const handleOpenPin = (pin: Pin) => {
     setSelectedPin(pin);
     // Find up to 3 similar pins in same category, exclude active one
-    const similar = PIN_ITEMS.filter(item => item.category === pin.category && item.id !== pin.id).slice(0, 3);
+    const similar = pins.filter(item => item.category === pin.category && item.id !== pin.id).slice(0, 3);
     setSimilarPins(similar);
     setNewCommentName("");
     setNewCommentText("");
@@ -552,7 +693,7 @@ export default function ShowcaseView({
   };
 
   // Filter & Search Matcher
-  const filteredPins = PIN_ITEMS.filter(pin => {
+  const filteredPins = pins.filter(pin => {
     const matchesSearch = 
       pin.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       pin.artist.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -803,6 +944,15 @@ export default function ShowcaseView({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {loadingMore && (
+        <div className="w-full py-10 flex flex-col items-center justify-center gap-3 border border-dashed border-primary/20 bg-[#e4e2f2]/20 dark:bg-[#101738]/20 rounded-none">
+          <Loader2 className="w-6 h-6 text-secondary animate-spin" />
+          <span className="text-[10px] font-mono font-bold text-primary/70 uppercase tracking-widest animate-pulse">
+            Extracting & Upscaling More Unique Pro Pins...
+          </span>
+        </div>
+      )}
 
       {/* Promoted / Sponsored Banner inside showcase */}
       <section className="bg-[#e4eaf0]/40 dark:bg-[#1b222c]/10 border border-primary p-6 flex flex-col md:flex-row items-center justify-between gap-4 mt-4 relative">

@@ -93,7 +93,6 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
     { id: "features", label: "Extractor" },
     { id: "quality", label: "Fidelity" },
     { id: "feedback", label: "Feedback" },
-    { id: "history", label: "History" },
     ...(user ? [{ id: "profile" as const, label: "Profile" }] : []),
   ];
 
