@@ -915,8 +915,9 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
       document.body.removeChild(aReport);
 
       const aVideo = document.createElement('a');
-      aVideo.href = fileUrl;
-      aVideo.download = `extractile-${task.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.mp4`;
+      const mediaFilename = `extractile-${task.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.mp4`;
+      aVideo.href = `/api/download-proxy?url=${encodeURIComponent(task.url || "")}&filename=${encodeURIComponent(mediaFilename)}`;
+      aVideo.download = mediaFilename;
       document.body.appendChild(aVideo);
       aVideo.click();
       document.body.removeChild(aVideo);
@@ -1038,7 +1039,7 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                 title: `Extracted Media Archival Package (${videoFormat})`,
                 filename: `extractile-${extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`,
                 mimeType: "video/mp4",
-                content: "https://assets.mixkit.co/videos/preview/mixkit-waves-breaking-in-the-ocean-from-above-31405-large.mp4",
+                content: `/api/download-proxy?url=${encodeURIComponent(url || "")}&filename=${encodeURIComponent(`extractile-${extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`)}`,
                 imageUrl: undefined,
                 type: "video",
                 reportContent: fileContent

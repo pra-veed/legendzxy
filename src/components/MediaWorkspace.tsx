@@ -204,15 +204,24 @@ EXPORT CODEC STANDARD:
 - Render Status: Completed with zero artifact drift
 - Export Timestamp: ${new Date().toLocaleString()}
 =================================================`;
-            const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
-            const fileUrl = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = fileUrl;
-            a.download = `film-master-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(fileUrl);
+            const reportBlob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
+            const reportUrl = window.URL.createObjectURL(reportBlob);
+            const aReport = document.createElement("a");
+            aReport.href = reportUrl;
+            aReport.download = `film-master-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-spec-report.txt`;
+            document.body.appendChild(aReport);
+            aReport.click();
+            document.body.removeChild(aReport);
+            window.URL.revokeObjectURL(reportUrl);
+
+            // Real Video Binary Download
+            const videoFilename = `film-master-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.${videoFormat.toLowerCase()}`;
+            const aVideo = document.createElement("a");
+            aVideo.href = `/api/download-proxy?url=${encodeURIComponent(url || "")}&filename=${encodeURIComponent(videoFilename)}`;
+            aVideo.download = videoFilename;
+            document.body.appendChild(aVideo);
+            aVideo.click();
+            document.body.removeChild(aVideo);
           }, 800);
           return 100;
         }

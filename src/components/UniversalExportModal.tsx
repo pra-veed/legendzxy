@@ -49,6 +49,8 @@ export default function UniversalExportModal({
   const [detectedOS, setDetectedOS] = useState<"iOS" | "Android" | "Desktop">("Desktop");
   const [activeInstructionTab, setActiveInstructionTab] = useState<"iOS" | "Android" | "Desktop">("Desktop");
 
+  const [isSharing, setIsSharing] = useState(false);
+
   // Detect OS and Share capabilities
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -60,7 +62,6 @@ export default function UniversalExportModal({
       setDetectedOS(os);
       setActiveInstructionTab(os);
 
-      // Check if native sharing is supported for text/files
       if (navigator.share) {
         setShareSupported(true);
       }
@@ -69,55 +70,54 @@ export default function UniversalExportModal({
 
   if (!isOpen) return null;
 
-  // Handle traditional browser download
+  // Handle traditional browser download with OS-specific headers
   const handleDownload = () => {
     try {
-      let urlBlob = "";
-      const isUrl = typeof content === "string" && (
-        content.startsWith("http://") || 
-        content.startsWith("https://") || 
-        content.startsWith("blob:") || 
-        content.startsWith("data:")
-      );
+      let downloadUrl = "";
+      const isMediaFile = filename.match(/\.(mp4|webm|mkv|mov|avi|mp3|wav|flac|aac|jpg|jpeg|png|webp)$/i);
 
-      if (isUrl) {
-        if (content.startsWith("http://") || content.startsWith("https://")) {
-          urlBlob = `/api/download-proxy?url=${encodeURIComponent(content)}&filename=${encodeURIComponent(filename)}`;
+      if (type === "video" || isMediaFile) {
+        let sourceUrl = content;
+        if (type === "photo" && imageUrl) sourceUrl = imageUrl;
+        if (sourceUrl && sourceUrl.startsWith("/api/download-proxy")) {
+          downloadUrl = sourceUrl;
         } else {
-          urlBlob = content;
+          downloadUrl = `/api/download-proxy?url=${encodeURIComponent(sourceUrl || "")}&filename=${encodeURIComponent(filename)}`;
         }
       } else if (type === "photo" && imageUrl) {
-        if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
-          urlBlob = `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(filename)}`;
+        if (imageUrl.startsWith("/api/download-proxy")) {
+          downloadUrl = imageUrl;
         } else {
-          urlBlob = imageUrl;
+          downloadUrl = `/api/download-proxy?url=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(filename)}`;
         }
+      } else if (typeof content === "string" && (content.startsWith("http://") || content.startsWith("https://") || content.startsWith("/api/"))) {
+        downloadUrl = content.startsWith("/api/") ? content : `/api/download-proxy?url=${encodeURIComponent(content)}&filename=${encodeURIComponent(filename)}`;
       } else {
-        const blob = new Blob([content], { type: mimeType });
-        urlBlob = URL.createObjectURL(blob);
+        const blob = new Blob([content], { type: mimeType || "text/plain;charset=utf-8" });
+        downloadUrl = URL.createObjectURL(blob);
       }
 
       const link = document.createElement("a");
-      link.href = urlBlob;
+      link.href = downloadUrl;
       link.download = filename;
       
-      // On some mobile browsers, target="_blank" is required for blob downloads
+      // Target blank for iOS & Android to open download window if direct download is intercepted
       if (detectedOS !== "Desktop") {
         link.target = "_blank";
+        link.rel = "noopener noreferrer";
       }
 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      if (!isUrl && !(type === "photo" && imageUrl)) {
-        URL.revokeObjectURL(urlBlob);
+      if (downloadUrl.startsWith("blob:")) {
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 2000);
       }
 
-      onTriggerAlert?.("Export Started", `Successfully requested download for ${filename}.`);
+      onTriggerAlert?.("Export Started", `Initiated direct download for ${filename} (${detectedOS}).`);
     } catch (err) {
       console.error("Standard download failed:", err);
-      // Fallback
       window.open(imageUrl || content, "_blank");
     }
   };
@@ -135,8 +135,8 @@ export default function UniversalExportModal({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(urlBlob);
-      onTriggerAlert?.("Report Exported", `Successfully downloaded archival spec report ${reportName}.`);
+      setTimeout(() => URL.revokeObjectURL(urlBlob), 2000);
+      onTriggerAlert?.("Report Exported", `Downloaded diagnostic report ${reportName}.`);
     } catch (err) {
       console.error("Report download failed:", err);
     }
@@ -155,57 +155,79 @@ export default function UniversalExportModal({
     }
   };
 
-  // Trigger Native Share (Highly responsive and perfect for modern mobile devices)
+  // Trigger Native Share with Real Binary File Fetching for Android & iOS
   const handleNativeShare = async () => {
     if (!navigator.share) {
-      onTriggerAlert?.("Share Unsupported", "Native sharing is not supported by this browser.");
+      onTriggerAlert?.("Share Unsupported", "Native OS share sheet unavailable. Initiating direct file download.");
+      handleDownload();
       return;
     }
 
+    setIsSharing(true);
     try {
-      // Build share parameters
-      const shareData: ShareData = {
-        title: `Extractile Export: ${title}`,
-        text: `Check out this exported asset from Extractile: ${filename}`
-      };
+      let fileToShare: File | null = null;
+      let targetSourceUrl = content;
+      if (type === "photo" && imageUrl) targetSourceUrl = imageUrl;
 
-      // If it's text-based content, we can either share the text directly or compile as file
-      if (type !== "photo" && type !== "video" && content.length < 5000) {
-        shareData.text = content;
-      } else {
-        // Try to share as a virtual File object (Supported in Safari iOS & Chrome Android on HTTPS)
-        try {
-          const blob = new Blob([content], { type: mimeType });
-          const file = new File([blob], filename, { type: mimeType });
-          if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            shareData.files = [file];
-          } else {
-            // Fallback to sharing URL or text summary
-            shareData.url = window.location.href;
-          }
-        } catch (fileErr) {
-          console.warn("Could not attach file to native share, falling back:", fileErr);
+      const isMedia = type === "video" || type === "photo" || filename.match(/\.(mp4|webm|mkv|mov|avi|mp3|wav|flac|aac|jpg|jpeg|png|webp)$/i);
+
+      if (isMedia) {
+        let proxyFetchUrl = targetSourceUrl;
+        if (!targetSourceUrl || !targetSourceUrl.startsWith("/api/download-proxy")) {
+          proxyFetchUrl = `/api/download-proxy?url=${encodeURIComponent(targetSourceUrl || "")}&filename=${encodeURIComponent(filename)}`;
         }
+
+        try {
+          const response = await fetch(proxyFetchUrl);
+          const blob = await response.blob();
+          const cleanType = mimeType || blob.type || (filename.endsWith('.mp3') ? 'audio/mpeg' : filename.endsWith('.jpg') ? 'image/jpeg' : 'video/mp4');
+          fileToShare = new File([blob], filename, { type: cleanType });
+        } catch (fetchErr) {
+          console.warn("Could not pre-fetch media blob for sharing, falling back to URL share:", fetchErr);
+        }
+      } else {
+        const blob = new Blob([content], { type: mimeType || "text/plain;charset=utf-8" });
+        fileToShare = new File([blob], filename, { type: mimeType || "text/plain;charset=utf-8" });
       }
 
-      await navigator.share(shareData);
-      onTriggerAlert?.("Shared Successfully", "Native sharing panel closed.");
+      if (fileToShare && navigator.canShare && navigator.canShare({ files: [fileToShare] })) {
+        await navigator.share({
+          title: `Extractile: ${title}`,
+          text: `Save or send ${filename} on ${detectedOS}`,
+          files: [fileToShare]
+        });
+        onTriggerAlert?.("Shared Successfully", "Native OS sharing sheet completed.");
+      } else {
+        await navigator.share({
+          title: `Extractile: ${title}`,
+          text: `Exported file ${filename}\n\n${content.length < 500 ? content : ''}`,
+          url: window.location.href
+        });
+        onTriggerAlert?.("Shared Successfully", "Export link shared to OS sheet.");
+      }
     } catch (err: any) {
       if (err.name !== "AbortError") {
-        console.error("Native share failed:", err);
-        // Fallback to opening in new window
-        window.open(imageUrl || content, "_blank");
+        console.error("Native share error:", err);
+        handleDownload();
       }
+    } finally {
+      setIsSharing(false);
     }
   };
 
-  // Open in a new tab (Essential backup for iOS Safari)
+  // Open in a new tab
   const handleOpenNewTab = () => {
     try {
-      if (type === "photo" && imageUrl) {
-        window.open(imageUrl, "_blank");
+      let targetUrl = content;
+      if (type === "photo" && imageUrl) targetUrl = imageUrl;
+
+      const isMedia = type === "video" || type === "photo" || filename.match(/\.(mp4|webm|mkv|mov|avi|mp3|wav|flac|aac|jpg|jpeg|png|webp)$/i);
+
+      if (isMedia) {
+        const proxyUrl = `/api/download-proxy?url=${encodeURIComponent(targetUrl || "")}&filename=${encodeURIComponent(filename)}`;
+        window.open(proxyUrl, "_blank");
       } else {
-        const blob = new Blob([content], { type: mimeType });
+        const blob = new Blob([content], { type: mimeType || "text/plain" });
         const urlBlob = URL.createObjectURL(blob);
         window.open(urlBlob, "_blank");
       }
@@ -318,9 +340,19 @@ export default function UniversalExportModal({
               {shareSupported ? (
                 <button
                   onClick={handleNativeShare}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-secondary text-primary font-bold text-xs tracking-widest uppercase hover:bg-secondary/90 border-2 border-primary cursor-pointer transition-all shadow-[2px_2px_0px_#1b222c]"
+                  disabled={isSharing}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-secondary text-primary font-bold text-xs tracking-widest uppercase hover:bg-secondary/90 border-2 border-primary cursor-pointer transition-all shadow-[2px_2px_0px_#1b222c] disabled:opacity-75"
                 >
-                  <Share2 className="w-4 h-4 text-primary" /> NATIVE MOBILE SHARE
+                  {isSharing ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                      PACKAGING FOR {detectedOS.toUpperCase()}...
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4 text-primary" /> NATIVE MOBILE SHARE ({detectedOS})
+                    </>
+                  )}
                 </button>
               ) : (
                 <button

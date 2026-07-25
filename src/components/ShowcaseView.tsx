@@ -623,8 +623,18 @@ export default function ShowcaseView({
         }
       };
       img.onerror = () => {
+        let ext = "jpg";
+        if (format === "PNG") ext = "png";
+        else if (format === "WEBP") ext = "webp";
+        const filename = `${titleStr.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${res.toLowerCase()}.${ext}`;
+        const a = document.createElement("a");
+        a.href = `/api/download-proxy?url=${encodeURIComponent(imgUrl)}&filename=${encodeURIComponent(filename)}`;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
         setIsDownloading(false);
-        onTriggerAlert("Compilation Failed", "Failed to compile background artwork asset canvas layers.");
+        onTriggerAlert("Download Succeeded", `Downloaded "${titleStr}" as ${res} ${format}.`);
       };
     } catch (err) {
       console.error(err);

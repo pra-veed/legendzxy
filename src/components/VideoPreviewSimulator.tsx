@@ -376,10 +376,10 @@ export default function VideoPreviewSimulator({
                           document.body.removeChild(a);
                           window.URL.revokeObjectURL(urlBlob);
                         } catch (err) {
+                          const filename = `extractile-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "photo"}.jpg`;
                           const a = document.createElement('a');
-                          a.href = displayImage;
-                          a.target = "_blank";
-                          a.download = `extractile-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "photo"}.jpg`;
+                          a.href = `/api/download-proxy?url=${encodeURIComponent(displayImage)}&filename=${encodeURIComponent(filename)}`;
+                          a.download = filename;
                           document.body.appendChild(a);
                           a.click();
                           document.body.removeChild(a);
