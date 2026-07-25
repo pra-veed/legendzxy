@@ -1076,6 +1076,80 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
     return () => clearInterval(interval);
   }, [status, extractedData, url, selectedVideo, selectedAudio, autoCopy, videoFormat, onTriggerAlert, enableTrim, trimStart, trimEnd]);
 
+  const handleOsSpecificDownload = (targetOS: "android" | "ios" | "windows" | "mac" | "linux") => {
+    setSelectedOS(targetOS === "mac" ? "ios" : targetOS === "linux" ? "windows" : targetOS);
+
+    let targetFormat: "MP4" | "MOV" | "WEBM" | "MKV" | "MP3" = "MP4";
+    let ext = "mp4";
+    let mime = "video/mp4";
+
+    if (targetOS === "ios" || targetOS === "mac") {
+      targetFormat = "MOV";
+      ext = "mov";
+      mime = "video/quicktime";
+    } else if (targetOS === "android") {
+      targetFormat = "MP4";
+      ext = "mp4";
+      mime = "video/mp4";
+    } else if (targetOS === "windows") {
+      targetFormat = "MP4";
+      ext = "mp4";
+      mime = "video/mp4";
+    } else if (targetOS === "linux") {
+      targetFormat = "WEBM";
+      ext = "webm";
+      mime = "video/webm";
+    }
+
+    setVideoFormat(targetFormat);
+
+    const osLabel = targetOS === "ios" 
+      ? "Apple iOS (iPhone/iPad)" 
+      : targetOS === "mac" 
+      ? "Apple macOS" 
+      : targetOS === "android" 
+      ? "Google Android" 
+      : targetOS === "windows" 
+      ? "Microsoft Windows" 
+      : "Linux / Open OS";
+
+    const safeTitle = extractedData?.title ? extractedData.title.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "media";
+    const filename = `extractile-${safeTitle}-${targetOS}.${ext}`;
+
+    const reportContent = `=========================================
+EXTRACTILE OS-OPTIMIZED ARCHIVAL REPORT
+=========================================
+Timestamp: ${new Date().toLocaleString()}
+Target Operating System: ${osLabel}
+Source Target URL: ${url}
+Media Title: ${extractedData?.title || "Extracted Stream Target"}
+Source Creator: ${extractedData?.channel || "Online Source"}
+Playback Duration: ${extractedData?.duration || "N/A"}
+
+OS Optimization Package Specs:
+- Video Resolution: ${selectedVideo === "1080p" ? "1080p Premium Scaled" : selectedVideo === "720p" ? "720p Standard Print" : "480p Reference Draft"}
+- OS Recommended Container: ${targetFormat} (.${ext})
+- Audio Codec: ${selectedAudio === "320kbps" ? "320kbps Master FLAC / MP3" : "256kbps Studio AAC"}
+- Active Editor Filters: ${videoFilter ? videoFilter : "Default Pristine Color Grade"}
+- Active Aspect Ratio: ${aspectRatio}
+- Active Watermark Tag: ${watermarkText ? watermarkText : "None"}
+
+System Status: Certified Reconstructed Byte Stream Envelopes Sealed
+License: Free & Open Archival Copy.
+=========================================`;
+
+    setExportModalData({
+      title: `Extracted ${osLabel} Package (${targetFormat})`,
+      filename,
+      mimeType: mime,
+      content: `/api/download-proxy?url=${encodeURIComponent(url || "")}&filename=${encodeURIComponent(filename)}`,
+      type: extractionMode === "photo" ? "photo" : "video",
+      imageUrl: extractionMode === "photo" ? extractedData?.thumbnailUrl : undefined,
+      reportContent
+    });
+    setExportModalOpen(true);
+  };
+
   const handleReset = () => {
     setStatus("idle");
     setUrl("");
@@ -2426,6 +2500,106 @@ License: Free & Open Archival Copy. Bypassed CDN protocol overhead.
                     <p className="text-[9px] font-mono text-on-surface-variant/70 uppercase">
                       Selecting this OS automatically adjusts the download package structure.
                     </p>
+                  </div>
+                </div>
+
+                {/* Instant OS Download Options Grid */}
+                <div className="mt-4 pt-4 border-t border-primary/20 space-y-2">
+                  <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
+                    Instant Download Options by OS
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {/* Android */}
+                    <button
+                      type="button"
+                      onClick={() => handleOsSpecificDownload("android")}
+                      className="p-3 bg-background hover:bg-surface-container border border-outline-variant hover:border-primary transition-all text-left flex flex-col justify-between gap-2 shadow-[2px_2px_0px_#1b222c] cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 font-bold text-xs font-mono uppercase text-primary">
+                          <Smartphone className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
+                          <span>Android OS</span>
+                        </div>
+                        <span className="text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 border border-emerald-300 font-bold">
+                          .MP4
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-on-surface-variant font-mono leading-tight">
+                        Samsung, Pixel, Xiaomi & Android Chrome
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-secondary uppercase pt-1">
+                        <Download className="w-3.5 h-3.5" /> Android Export →
+                      </div>
+                    </button>
+
+                    {/* iOS / Mac */}
+                    <button
+                      type="button"
+                      onClick={() => handleOsSpecificDownload("ios")}
+                      className="p-3 bg-background hover:bg-surface-container border border-outline-variant hover:border-primary transition-all text-left flex flex-col justify-between gap-2 shadow-[2px_2px_0px_#1b222c] cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 font-bold text-xs font-mono uppercase text-primary">
+                          <Laptop className="w-4 h-4 text-sky-600 group-hover:scale-110 transition-transform" />
+                          <span>iOS / Apple</span>
+                        </div>
+                        <span className="text-[9px] font-mono bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 px-1.5 py-0.5 border border-sky-300 font-bold">
+                          .MOV
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-on-surface-variant font-mono leading-tight">
+                        QuickTime for iPhone, iPad, Safari & Mac
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-secondary uppercase pt-1">
+                        <Download className="w-3.5 h-3.5" /> Apple Export →
+                      </div>
+                    </button>
+
+                    {/* Windows */}
+                    <button
+                      type="button"
+                      onClick={() => handleOsSpecificDownload("windows")}
+                      className="p-3 bg-background hover:bg-surface-container border border-outline-variant hover:border-primary transition-all text-left flex flex-col justify-between gap-2 shadow-[2px_2px_0px_#1b222c] cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 font-bold text-xs font-mono uppercase text-primary">
+                          <Monitor className="w-4 h-4 text-blue-600 group-hover:scale-110 transition-transform" />
+                          <span>Windows PC</span>
+                        </div>
+                        <span className="text-[9px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 border border-blue-300 font-bold">
+                          .MP4
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-on-surface-variant font-mono leading-tight">
+                        Windows Media Player & Edge PC
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-secondary uppercase pt-1">
+                        <Download className="w-3.5 h-3.5" /> Windows Export →
+                      </div>
+                    </button>
+
+                    {/* Linux / Open OS */}
+                    <button
+                      type="button"
+                      onClick={() => handleOsSpecificDownload("linux")}
+                      className="p-3 bg-background hover:bg-surface-container border border-outline-variant hover:border-primary transition-all text-left flex flex-col justify-between gap-2 shadow-[2px_2px_0px_#1b222c] cursor-pointer group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 font-bold text-xs font-mono uppercase text-primary">
+                          <Laptop className="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" />
+                          <span>Linux / Web</span>
+                        </div>
+                        <span className="text-[9px] font-mono bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 border border-purple-300 font-bold">
+                          .WEBM
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-on-surface-variant font-mono leading-tight">
+                        Open Web Media for Linux & Firefox
+                      </span>
+                      <div className="flex items-center gap-1 text-[10px] font-mono font-bold text-secondary uppercase pt-1">
+                        <Download className="w-3.5 h-3.5" /> Linux Export →
+                      </div>
+                    </button>
                   </div>
                 </div>
               </div>
