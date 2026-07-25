@@ -10,12 +10,20 @@ import {
   Network, 
   Sparkles,
   Database,
-  ArrowRight
+  ArrowRight,
+  Sliders,
+  Settings,
+  RefreshCw,
+  FileVideo,
+  Music,
+  Check
 } from "lucide-react";
+
+import CircularProgressBar from "./CircularProgressBar";
 
 interface ExtractionProgressBarProps {
   progress: number;
-  videoFormat: "MP4" | "WEBM" | "MKV";
+  videoFormat: "MP4" | "WEBM" | "MKV" | "MOV" | "MP3";
   selectedVideo: string;
   selectedAudio: string;
   videoFilter: string;
@@ -25,6 +33,7 @@ interface ExtractionProgressBarProps {
   enableTrim?: boolean;
   trimStart?: string;
   trimEnd?: string;
+  onFormatChange?: (newFormat: "MP4" | "WEBM" | "MKV" | "MOV" | "MP3") => void;
 }
 
 interface LogEntry {
@@ -44,10 +53,43 @@ export default function ExtractionProgressBar({
   title,
   enableTrim,
   trimStart,
-  trimEnd
+  trimEnd,
+  onFormatChange
 }: ExtractionProgressBarProps) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const logContainerRef = useRef<HTMLDivElement>(null);
+
+  // Real-time Conversion Settings state during stream processing
+  const [currentFormat, setCurrentFormat] = useState<"MP4" | "WEBM" | "MKV" | "MOV" | "MP3">(videoFormat);
+  const [transcodePreset, setTranscodePreset] = useState<"fast" | "balanced" | "archival">("balanced");
+  const [audioBitrate, setAudioBitrate] = useState<"320kbps" | "256kbps" | "192kbps">("320kbps");
+  const [isFormatSwitching, setIsFormatSwitching] = useState<boolean>(false);
+
+  // Keep local format synced with prop
+  useEffect(() => {
+    setCurrentFormat(videoFormat);
+  }, [videoFormat]);
+
+  const handleSelectFormat = (fmt: "MP4" | "WEBM" | "MKV" | "MOV" | "MP3") => {
+    if (fmt === currentFormat) return;
+    setCurrentFormat(fmt);
+    setIsFormatSwitching(true);
+    setTimeout(() => setIsFormatSwitching(false), 600);
+
+    const timestamp = new Date().toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    setLogs(prev => [
+      ...prev,
+      {
+        timestamp,
+        tag: "CODEC",
+        message: `REAL-TIME CONVERT SWITCH: Target container set to ${fmt} during stream phase (${progress}%). Re-routing muxer pipeline...`
+      }
+    ]);
+
+    if (onFormatChange) {
+      onFormatChange(fmt);
+    }
+  };
 
   // Derive logical stages
   // Stage 1: Download & Buffering (Progress 0 - 50)
@@ -225,110 +267,245 @@ export default function ExtractionProgressBar({
         </div>
       </div>
 
-      {/* Primary Mega Progress Bar Block */}
-      <div id="extraction-mega-progress-bar-wrapper" className="space-y-2">
-        <div className="flex justify-between items-end">
-          <span className="text-[10px] font-mono font-bold text-[#4f5e7c] uppercase tracking-wider flex items-center gap-1">
-            <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-            {isDownloading && "STAGE 1: HIGH-SPEED SEGMENT BUFFERING"}
-            {isTranscoding && "STAGE 2: HARDWARE-ACCELERATED TRANSCODING"}
-            {isPackaging && "STAGE 3: ASSEMBLY & PACKAGING REPORT"}
-          </span>
-          <span className="text-sm font-mono font-black text-primary">{progress}%</span>
+      {/* Primary Mega Progress Bar Block with Circular Percentage Dial */}
+      <div id="extraction-mega-progress-bar-wrapper" className="space-y-4">
+        <div className="flex flex-col sm:flex-row items-center gap-6 bg-background p-4 border-2 border-primary shadow-[2px_2px_0px_#1b222c]">
+          {/* Main Circular Progress Ring */}
+          <div className="shrink-0 flex flex-col items-center">
+            <CircularProgressBar
+              progress={progress}
+              size={110}
+              strokeWidth={9}
+              variant={isPackaging ? "emerald" : isTranscoding ? "sky" : "primary"}
+              label="Extraction"
+              sublabel={isDownloading ? "Buffering" : isTranscoding ? "Transcoding" : "Packaging"}
+            />
+          </div>
+
+          {/* Linear Bar & Active Phase Highlights */}
+          <div className="flex-1 w-full space-y-3">
+            <div className="flex justify-between items-end">
+              <span className="text-[11px] font-mono font-bold text-[#4f5e7c] uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-secondary animate-pulse" />
+                {isDownloading && "STAGE 1: HIGH-SPEED SEGMENT BUFFERING"}
+                {isTranscoding && "STAGE 2: HARDWARE-ACCELERATED TRANSCODING"}
+                {isPackaging && "STAGE 3: ASSEMBLY & PACKAGING REPORT"}
+              </span>
+              <span className="text-sm font-mono font-black text-primary bg-surface-container px-2 py-0.5 border border-primary/20">
+                {progress}% COMPLETE
+              </span>
+            </div>
+
+            {/* Beautiful Swiss Brutalist Grid Progress Bar with Wave Animation */}
+            <div className="relative h-7 w-full bg-surface-container border-2 border-primary overflow-hidden">
+              <style dangerouslySetInnerHTML={{__html: `
+                @keyframes waveFlow1 {
+                  0% { transform: translateX(0); }
+                  100% { transform: translateX(-50%); }
+                }
+                @keyframes waveFlow2 {
+                  0% { transform: translateX(-50%); }
+                  100% { transform: translateX(0); }
+                }
+                @keyframes waveSway {
+                  0%, 100% { transform: translateY(0) scaleY(1); }
+                  50% { transform: translateY(-1.5px) scaleY(1.08); }
+                }
+                @keyframes pulseLeadingWave {
+                  0%, 100% { opacity: 0.75; transform: scaleX(1); }
+                  50% { opacity: 1; transform: scaleX(1.3); }
+                }
+              `}} />
+
+              {/* Running progress fill */}
+              <motion.div 
+                id="extraction-mega-progress-fill"
+                className="h-full bg-primary relative overflow-hidden flex items-center"
+                animate={{ width: `${progress}%` }}
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              >
+                {/* Striped overlay for elegant style */}
+                <div 
+                  className="absolute inset-0 opacity-10 z-10"
+                  style={{
+                    backgroundImage: `linear-gradient(45deg, #e4eaf0 25%, transparent 25%, transparent 50%, #e4eaf0 50%, #e4eaf0 75%, transparent 75%, transparent)`,
+                    backgroundSize: '16px 16px'
+                  }}
+                />
+
+                {/* SMOOTH WAVE ANIMATION LAYERS */}
+                {progress < 100 && (
+                  <div className="absolute inset-0 z-0 pointer-events-none select-none">
+                    {/* Wave Layer 1: Gold / Secondary Stream Packet Wave */}
+                    <div className="absolute inset-0 w-[200%] h-full animate-[waveFlow1_8s_linear_infinite] opacity-35">
+                      <svg className="w-full h-full" viewBox="0 0 1000 32" preserveAspectRatio="none" style={{ animation: "waveSway 3s ease-in-out infinite" }}>
+                        <path 
+                          d="M 0 14 Q 125 6, 250 14 T 500 14 T 750 14 T 1000 14 V 32 H 0 Z" 
+                          fill="currentColor" 
+                          className="text-secondary" 
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Wave Layer 2: Forest Sage Decrypted Tunnel Wave */}
+                    <div className="absolute inset-0 w-[200%] h-full animate-[waveFlow2_5s_linear_infinite] opacity-45">
+                      <svg className="w-full h-full" viewBox="0 0 1000 32" preserveAspectRatio="none" style={{ animation: "waveSway 2.2s ease-in-out infinite alternate" }}>
+                        <path 
+                          d="M 0 16 Q 125 24, 250 16 T 500 16 T 750 16 T 1000 16 V 32 H 0 Z" 
+                          fill="currentColor" 
+                          className="text-[#4f5e7c]" 
+                        />
+                      </svg>
+                    </div>
+
+                    {/* Wave Layer 3: Soft highlight fine ripple */}
+                    <div className="absolute inset-0 w-[200%] h-full animate-[waveFlow1_12s_linear_infinite] opacity-20">
+                      <svg className="w-full h-full" viewBox="0 0 1000 32" preserveAspectRatio="none">
+                        <path 
+                          d="M 0 11 Q 125 15, 250 11 T 500 11 T 750 11 T 1000 11 V 32 H 0 Z" 
+                          fill="white" 
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                )}
+
+                {/* Glowing Active Crest Leading Wave Indicator */}
+                {progress > 0 && progress < 100 && (
+                  <div 
+                    className="absolute right-0 top-0 bottom-0 w-3 bg-secondary/80 blur-[1px] z-20 animate-[pulseLeadingWave_1.5s_ease-in-out_infinite]"
+                    style={{
+                      clipPath: 'polygon(100% 0, 100% 100%, 0 50%)'
+                    }}
+                  />
+                )}
+              </motion.div>
+
+              {/* Subtle percentage guidelines overlayed above fill */}
+              <div className="absolute inset-0 flex justify-between px-3 text-[8px] font-mono font-bold text-on-surface/50 z-20 pointer-events-none items-center uppercase select-none">
+                <span className="bg-background/80 px-1 py-0.5 border border-primary/15">START</span>
+                <span className="bg-background/80 px-1 py-0.5 border border-primary/15">25% INGEST</span>
+                <span className="bg-background/80 px-1 py-0.5 border border-primary/15">50% PACKETS</span>
+                <span className="bg-background/80 px-1 py-0.5 border border-primary/15">75% TRANSCODE</span>
+                <span className="bg-background/80 px-1 py-0.5 border border-primary/15">SEALED</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Real-Time Format Conversion & Target Container Selector during Stream Ingest */}
+      <div id="realtime-format-conversion-panel" className="bg-background border-2 border-primary p-4 shadow-[4px_4px_0px_#1b222c] space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-primary/20 pb-2.5">
+          <div className="flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-secondary animate-pulse" />
+            <div>
+              <h5 className="font-mono text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-2">
+                <span>REAL-TIME STREAM FORMAT CONVERSION</span>
+                <span className="text-[9px] bg-secondary text-on-secondary px-1.5 py-0.2 font-mono font-black uppercase">
+                  LIVE STREAM REMUX
+                </span>
+              </h5>
+              <p className="text-[10px] font-mono text-on-surface-variant/80">
+                Switch target container or bitrate on the fly while stream buffer is actively downloading
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 text-[9px] font-mono text-primary font-bold bg-surface-container px-2.5 py-1 border border-primary/30">
+            <RefreshCw className={`w-3 h-3 text-secondary ${isFormatSwitching ? "animate-spin" : ""}`} />
+            <span>ACTIVE CONTAINER: .{currentFormat.toLowerCase()}</span>
+          </div>
         </div>
 
-        {/* Beautiful Swiss Brutalist Grid Progress Bar with Wave Animation */}
-        <div className="relative h-8 w-full bg-background border-2 border-primary overflow-hidden">
-          <style dangerouslySetInnerHTML={{__html: `
-            @keyframes waveFlow1 {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-            @keyframes waveFlow2 {
-              0% { transform: translateX(-50%); }
-              100% { transform: translateX(0); }
-            }
-            @keyframes waveSway {
-              0%, 100% { transform: translateY(0) scaleY(1); }
-              50% { transform: translateY(-1.5px) scaleY(1.08); }
-            }
-            @keyframes pulseLeadingWave {
-              0%, 100% { opacity: 0.75; transform: scaleX(1); }
-              50% { opacity: 1; transform: scaleX(1.3); }
-            }
-          `}} />
-
-          {/* Running progress fill */}
-          <motion.div 
-            id="extraction-mega-progress-fill"
-            className="h-full bg-primary relative overflow-hidden flex items-center"
-            animate={{ width: `${progress}%` }}
-            transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          >
-            {/* Striped overlay for elegant style */}
-            <div 
-              className="absolute inset-0 opacity-10 z-10"
-              style={{
-                backgroundImage: `linear-gradient(45deg, #e4eaf0 25%, transparent 25%, transparent 50%, #e4eaf0 50%, #e4eaf0 75%, transparent 75%, transparent)`,
-                backgroundSize: '16px 16px'
-              }}
-            />
-
-            {/* SMOOTH WAVE ANIMATION LAYERS */}
-            {progress < 100 && (
-              <div className="absolute inset-0 z-0 pointer-events-none select-none">
-                {/* Wave Layer 1: Gold / Secondary Stream Packet Wave */}
-                <div className="absolute inset-0 w-[200%] h-full animate-[waveFlow1_8s_linear_infinite] opacity-35">
-                  <svg className="w-full h-full" viewBox="0 0 1000 32" preserveAspectRatio="none" style={{ animation: "waveSway 3s ease-in-out infinite" }}>
-                    <path 
-                      d="M 0 14 Q 125 6, 250 14 T 500 14 T 750 14 T 1000 14 V 32 H 0 Z" 
-                      fill="currentColor" 
-                      className="text-secondary" 
-                    />
-                  </svg>
-                </div>
-
-                {/* Wave Layer 2: Forest Sage Decrypted Tunnel Wave */}
-                <div className="absolute inset-0 w-[200%] h-full animate-[waveFlow2_5s_linear_infinite] opacity-45">
-                  <svg className="w-full h-full" viewBox="0 0 1000 32" preserveAspectRatio="none" style={{ animation: "waveSway 2.2s ease-in-out infinite alternate" }}>
-                    <path 
-                      d="M 0 16 Q 125 24, 250 16 T 500 16 T 750 16 T 1000 16 V 32 H 0 Z" 
-                      fill="currentColor" 
-                      className="text-[#4f5e7c]" 
-                    />
-                  </svg>
-                </div>
-
-                {/* Wave Layer 3: Soft highlight fine ripple */}
-                <div className="absolute inset-0 w-[200%] h-full animate-[waveFlow1_12s_linear_infinite] opacity-20">
-                  <svg className="w-full h-full" viewBox="0 0 1000 32" preserveAspectRatio="none">
-                    <path 
-                      d="M 0 11 Q 125 15, 250 11 T 500 11 T 750 11 T 1000 11 V 32 H 0 Z" 
-                      fill="white" 
-                    />
-                  </svg>
-                </div>
+        {/* Format Selector Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {(["MP4", "MKV", "MOV", "WEBM", "MP3"] as const).map((fmt) => (
+            <button
+              key={fmt}
+              type="button"
+              onClick={() => handleSelectFormat(fmt)}
+              className={`p-2.5 border text-left font-mono transition-all duration-200 cursor-pointer relative ${
+                currentFormat === fmt
+                  ? "bg-primary text-on-primary border-primary shadow-[2px_2px_0px_#c5c0b5]"
+                  : "bg-surface-container/50 hover:bg-background border-outline-variant text-on-surface hover:border-primary"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black uppercase flex items-center gap-1">
+                  {fmt === "MP3" ? <Music className="w-3 h-3 text-secondary" /> : <FileVideo className="w-3 h-3" />}
+                  <span>.{fmt.toLowerCase()}</span>
+                </span>
+                {currentFormat === fmt && (
+                  <Check className="w-3 h-3 text-secondary animate-scale-in" />
+                )}
               </div>
-            )}
+              <div className={`text-[8px] uppercase tracking-tight leading-tight ${currentFormat === fmt ? "text-on-primary/80" : "text-on-surface-variant"}`}>
+                {fmt === "MP4" && "Universal H.264"}
+                {fmt === "MKV" && "Matroska Remux"}
+                {fmt === "MOV" && "QuickTime Apple"}
+                {fmt === "WEBM" && "Open Web VP9"}
+                {fmt === "MP3" && "320kbps Audio"}
+              </div>
+            </button>
+          ))}
+        </div>
 
-            {/* Glowing Active Crest Leading Wave Indicator */}
-            {progress > 0 && progress < 100 && (
-              <div 
-                className="absolute right-0 top-0 bottom-0 w-3 bg-secondary/80 blur-[1px] z-20 animate-[pulseLeadingWave_1.5s_ease-in-out_infinite]"
-                style={{
-                  clipPath: 'polygon(100% 0, 100% 100%, 0 50%)'
-                }}
-              />
-            )}
-          </motion.div>
+        {/* Sub-settings: Transcode Quality Preset & Audio Bitrate Sampling */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-primary/10">
+          <div>
+            <label className="text-[9px] font-mono font-bold uppercase text-on-surface-variant block mb-1">
+              Transcoding Pipeline Strategy
+            </label>
+            <div className="flex border border-outline-variant bg-surface-container/40">
+              <button
+                type="button"
+                onClick={() => setTranscodePreset("fast")}
+                className={`flex-1 py-1 px-2 text-[9px] font-mono font-bold uppercase transition-all ${
+                  transcodePreset === "fast" ? "bg-secondary text-on-secondary" : "text-on-surface-variant hover:text-primary"
+                }`}
+              >
+                Fast Stream
+              </button>
+              <button
+                type="button"
+                onClick={() => setTranscodePreset("balanced")}
+                className={`flex-1 py-1 px-2 text-[9px] font-mono font-bold uppercase transition-all ${
+                  transcodePreset === "balanced" ? "bg-secondary text-on-secondary" : "text-on-surface-variant hover:text-primary"
+                }`}
+              >
+                Balanced
+              </button>
+              <button
+                type="button"
+                onClick={() => setTranscodePreset("archival")}
+                className={`flex-1 py-1 px-2 text-[9px] font-mono font-bold uppercase transition-all ${
+                  transcodePreset === "archival" ? "bg-secondary text-on-secondary" : "text-on-surface-variant hover:text-primary"
+                }`}
+              >
+                Lossless 4K
+              </button>
+            </div>
+          </div>
 
-          {/* Subtle percentage guidelines overlayed above fill */}
-          <div className="absolute inset-0 flex justify-between px-4 text-[9px] font-mono font-bold text-on-surface/40 z-20 pointer-events-none items-center uppercase select-none">
-            <span className="bg-background/80 px-1 py-0.5 border border-primary/15">START</span>
-            <span className="bg-background/80 px-1 py-0.5 border border-primary/15">25% INGEST</span>
-            <span className="bg-background/80 px-1 py-0.5 border border-primary/15">50% PACKET STREAM</span>
-            <span className="bg-background/80 px-1 py-0.5 border border-primary/15">75% TRANSCODE</span>
-            <span className="bg-background/80 px-1 py-0.5 border border-primary/15">SEALED</span>
+          <div>
+            <label className="text-[9px] font-mono font-bold uppercase text-on-surface-variant block mb-1">
+              Audio Bitrate Stream Demux
+            </label>
+            <div className="flex border border-outline-variant bg-surface-container/40">
+              {(["320kbps", "256kbps", "192kbps"] as const).map((bit) => (
+                <button
+                  key={bit}
+                  type="button"
+                  onClick={() => setAudioBitrate(bit)}
+                  className={`flex-1 py-1 px-2 text-[9px] font-mono font-bold uppercase transition-all ${
+                    audioBitrate === bit ? "bg-primary text-on-primary" : "text-on-surface-variant hover:text-primary"
+                  }`}
+                >
+                  {bit}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

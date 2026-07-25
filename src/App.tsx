@@ -9,6 +9,7 @@ import FeedbackView from "./components/FeedbackView";
 import HistoryView from "./components/HistoryView";
 import UserProfile from "./components/UserProfile";
 import ShowcaseView from "./components/ShowcaseView";
+import AiStudioView from "./components/AiStudioView";
 import NotificationModal from "./components/NotificationModal";
 import LiveChat from "./components/LiveChat";
 import WebsiteViewerModal from "./components/WebsiteViewerModal";
@@ -92,6 +93,8 @@ export default function App() {
     switch (activeTab) {
       case "features":
         return <FeaturesView onOpenWebsite={setPreviewWebsiteUrl} onTriggerAlert={handleTriggerAlert} user={user} authLoading={authLoading} setActiveTab={setActiveTab} />;
+      case "aistudio":
+        return <AiStudioView onTriggerAlert={handleTriggerAlert} />;
       case "quality":
         return <QualityView />;
       case "faq":

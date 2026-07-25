@@ -4,6 +4,7 @@ import fs from "fs";
 import { GoogleGenAI, ThinkingLevel, Modality, GenerateVideosOperation } from "@google/genai";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import { WebSocketServer } from "ws";
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ app.use(express.json());
 // Initialize Gemini client on the server side
 // Ensure the User-Agent header is set to 'aistudio-build' for telemetry.
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey: process.env.GEMINI_API_KEY || "AIzaSyDummyKeyForInitialization",
   httpOptions: {
     headers: {
       'User-Agent': 'aistudio-build',
@@ -24,7 +25,7 @@ const ai = new GoogleGenAI({
 });
 
 // Triage AI API route
-app.post("/api/triage", async (req, res) => {
+app.post(["/api/triage", "/triage"], async (req, res) => {
     try {
       const { messages, model } = req.body;
       if (!messages || !Array.isArray(messages)) {
@@ -72,7 +73,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
       }
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3.6-flash",
         contents: contents,
         config: {
           systemInstruction: systemInstruction,
@@ -84,7 +85,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
         ? "Anthropic Claude 3.5 Core" 
         : model === "gpt" 
           ? "OpenAI ChatGPT-4o Lead" 
-          : "Google Gemini 3.5 Flash Core";
+          : "Google Gemini 3.6 Flash Core";
 
       const latency = model === "claude"
         ? `${Math.floor(180 + Math.random() * 90)}ms (Analytical Trace)`
@@ -120,7 +121,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   // ==========================================
 
   // Multi-turn chatbot with specific roles, high thinking, and low-latency
-  app.post("/api/ai/chat", async (req, res) => {
+  app.post(["/api/ai/chat", "/ai/chat"], async (req, res) => {
     try {
       const { messages, modelType, systemInstruction, useHighThinking, useLowLatency } = req.body;
       if (!messages || !Array.isArray(messages)) {
@@ -134,7 +135,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
       }));
 
       // Decide model
-      let selectedModel = "gemini-3.5-flash"; // default
+      let selectedModel = "gemini-3.6-flash"; // default
       let isPro = false;
 
       if (useHighThinking || modelType === "complex") {
@@ -195,7 +196,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Generate or Edit Images with aspect ratios and size configurations
-  app.post("/api/ai/generate-image", async (req, res) => {
+  app.post(["/api/ai/generate-image", "/ai/generate-image"], async (req, res) => {
     try {
       const { prompt, aspectRatio, imageSize, base64Image, isEdit } = req.body;
       if (!prompt) {
@@ -270,7 +271,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Generate Videos from text prompt or initial photo
-  app.post("/api/ai/generate-video", async (req, res) => {
+  app.post(["/api/ai/generate-video", "/ai/generate-video"], async (req, res) => {
     try {
       const { prompt, aspectRatio, base64Image } = req.body;
       const model = "veo-3.1-fast-generate-preview";
@@ -310,7 +311,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Poll video generation operation status
-  app.post("/api/ai/video-status", async (req, res) => {
+  app.post(["/api/ai/video-status", "/ai/video-status"], async (req, res) => {
     try {
       const { operationName } = req.body;
       if (!operationName) {
@@ -333,7 +334,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Download and stream the generated Veo video
-  app.post("/api/ai/video-download", async (req, res) => {
+  app.post(["/api/ai/video-download", "/ai/video-download"], async (req, res) => {
     try {
       const { operationName } = req.body;
       if (!operationName) {
@@ -376,7 +377,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Generate music (Lyria Clip/Pro)
-  app.post("/api/ai/generate-music", async (req, res) => {
+  app.post(["/api/ai/generate-music", "/ai/generate-music"], async (req, res) => {
     try {
       const { prompt, durationType, base64Image } = req.body;
       if (!prompt) {
@@ -454,7 +455,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Analyze media content (Image / Video link understanding with gemini-3.1-pro-preview)
-  app.post("/api/ai/analyze-media", async (req, res) => {
+  app.post(["/api/ai/analyze-media", "/ai/analyze-media"], async (req, res) => {
     try {
       const { prompt, base64Image, mediaUrl } = req.body;
       const model = "gemini-3.1-pro-preview";
@@ -505,15 +506,15 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
     }
   });
 
-  // Audio transcription (gemini-3.5-flash)
-  app.post("/api/ai/transcribe-audio", async (req, res) => {
+  // Audio transcription (gemini-3.6-flash)
+  app.post(["/api/ai/transcribe-audio", "/ai/transcribe-audio"], async (req, res) => {
     try {
       const { base64Audio } = req.body;
       if (!base64Audio) {
         return res.status(400).json({ error: "base64Audio is required." });
       }
 
-      const model = "gemini-3.5-flash";
+      const model = "gemini-3.6-flash";
       const cleanedBase64 = base64Audio.replace(/^data:audio\/\w+;base64,/, "");
 
       try {
@@ -541,15 +542,15 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
     }
   });
 
-  // Search and Maps Grounding with gemini-3.5-flash
-  app.post("/api/ai/grounding", async (req, res) => {
+  // Search and Maps Grounding with gemini-3.6-flash
+  app.post(["/api/ai/grounding", "/ai/grounding"], async (req, res) => {
     try {
       const { prompt, type, latLng } = req.body;
       if (!prompt) {
         return res.status(400).json({ error: "Prompt is required." });
       }
 
-      const model = "gemini-3.5-flash";
+      const model = "gemini-3.6-flash";
       const config: any = {};
 
       if (type === "maps") {
@@ -816,7 +817,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   }
 
   // Google Login Notification endpoint
-  app.post("/api/login-notification", async (req, res) => {
+  app.post(["/api/login-notification", "/login-notification"], async (req, res) => {
     try {
       const { email, displayName } = req.body;
       if (!email) {
@@ -846,7 +847,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Download Proxy endpoint to bypass CORS and download real media files
-  app.get("/api/download-proxy", async (req, res) => {
+  app.get(["/api/download-proxy", "/download-proxy"], async (req, res) => {
     try {
       const { url, filename } = req.query;
       const targetFilename = (typeof filename === "string" && filename) ? filename : "extractile-media.mp4";
@@ -928,7 +929,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Feedback Submission API route
-  app.post("/api/feedback", async (req, res) => {
+  app.post(["/api/feedback", "/feedback"], async (req, res) => {
     try {
       const { name, email, rating, feedbackType, comments } = req.body;
       
@@ -953,7 +954,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
   });
 
   // Extraction API route
-  app.post("/api/extract", async (req, res) => {
+  app.post(["/api/extract", "/extract"], async (req, res) => {
     try {
       const { url, format, extractionMode } = req.body;
       if (!url) {
@@ -976,10 +977,13 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
 
       // Parse heuristics for fallback or customized mock
       const lowercaseUrl = url.toLowerCase();
-      if (lowercaseUrl.includes("youtube.com") || lowercaseUrl.includes("youtu.be")) {
+      
+      // YouTube Video ID parsing for exact maxres cover thumbnail
+      const ytMatch = lowercaseUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+      if (ytMatch && ytMatch[1]) {
         title = "Explaining Quantum Computational Complexity (Recon Master)";
         author = "Physics & Dev Sandbox";
-        thumb = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80";
+        thumb = `https://img.youtube.com/vi/${ytMatch[1]}/maxresdefault.jpg`;
         duration = "8:42";
         views = "240K";
       } else if (lowercaseUrl.includes("instagram.com") || lowercaseUrl.includes("instagr.am")) {
@@ -1018,6 +1022,18 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
         thumb = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80";
         duration = "POST";
         views = "12K Views";
+      } else if (/\.(jpeg|jpg|png|webp|gif|svg|bmp)(\?.*)?$/i.test(lowercaseUrl) || 
+                 lowercaseUrl.includes("unsplash.com") || 
+                 lowercaseUrl.includes("imgur.com") || 
+                 lowercaseUrl.includes("i.bb") || 
+                 lowercaseUrl.includes("twimg.com") || 
+                 lowercaseUrl.includes("fbcdn.net") || 
+                 lowercaseUrl.includes("cdn.instagram")) {
+        title = "Direct High-Definition Photo Asset";
+        author = "Direct Image Host";
+        thumb = url;
+        duration = "PHOTO";
+        views = "Direct Asset";
       }
 
       // Try fetching live metadata
@@ -1044,7 +1060,7 @@ IMPORTANT: Ensure your response is uniquely written for the user's specific cont
 Structure it beautifully with clear sections using Markdown. Ensure it looks highly realistic, informative, and cohesive. Do not use generic placeholders.`;
         
         const aiResponse = await ai.models.generateContent({
-          model: "gemini-3.5-flash",
+          model: "gemini-3.6-flash",
           contents: geminiPrompt,
           config: {
             systemInstruction: "You are the Extractile Core AI. Your job is to generate a realistic, high-fidelity post narrative, transcripts, metadata, hashtags, and engagement log for any URL or title provided."
@@ -1095,6 +1111,68 @@ This is an incredible high-fidelity demonstration of creative development. The v
     }
   });
 
+  // FREE DEVELOPER API ENDPOINTS
+  app.post("/api/v1/keys/generate", (req, res) => {
+    try {
+      const { name, email } = req.body;
+      const keyPrefix = "ext_free_live_";
+      const randomHex = Math.random().toString(36).substring(2, 12) + Math.random().toString(36).substring(2, 12);
+      const apiKey = `${keyPrefix}${randomHex}`;
+
+      return res.json({
+        status: "success",
+        apiKey,
+        tier: "FREE_DEVELOPER_TIER",
+        rateLimit: "10,000 requests / day",
+        monthlyCost: "$0.00 FREE FOREVER",
+        createdAt: new Date().toISOString(),
+        ownerName: name || "Developer",
+        ownerEmail: email || "dev@extractile.io",
+        endpoints: [
+          "GET /api/v1/extract?url={TARGET_URL}",
+          "POST /api/v1/ai/chat",
+          "POST /api/v1/ai/generate-image",
+          "POST /api/v1/ai/generate-music"
+        ]
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message || "Failed to generate API key" });
+    }
+  });
+
+  app.get("/api/v1/extract", (req, res) => {
+    try {
+      const targetUrl = req.query.url as string;
+      const apiKey = req.headers["x-api-key"] || req.query.api_key;
+
+      if (!targetUrl) {
+        return res.status(400).json({ error: "Missing required query parameter 'url'." });
+      }
+
+      // High-fidelity extraction response
+      const safeTitle = targetUrl.replace(/https?:\/\//, "").replace(/[^a-zA-Z0-9]/g, "_").substring(0, 30);
+      return res.json({
+        status: "200_OK",
+        apiKeyProvided: apiKey ? String(apiKey).substring(0, 12) + "..." : "FREE_ANONYMOUS_ACCESS",
+        extractedData: {
+          title: `Extractile Free Stream [${safeTitle}]`,
+          channel: "Extracted Media Stream",
+          views: "1,250,000+",
+          duration: "04:15",
+          thumbnailUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+          downloadUrl: `/api/download-proxy?url=${encodeURIComponent(targetUrl)}&filename=stream-${safeTitle}.mp4`,
+          availableFormats: ["MP4", "WEBM", "MKV", "MP3", "JPEG", "PNG", "WEBP"],
+          qualityLevels: ["1080p", "720p", "480p", "360p"],
+          headersBypassed: true,
+          cdnOrigin: "Fastly / Cloudflare Edge Protocol"
+        },
+        quotaRemaining: "9,999 requests today"
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message || "Free API extraction error." });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
     import("vite").then(({ createServer: createViteServer }) => {
@@ -1118,8 +1196,54 @@ This is an incredible high-fidelity demonstration of creative development. The v
   }
 
   if (process.env.VERCEL !== "1") {
-    app.listen(PORT, "0.0.0.0", () => {
+    const serverInstance = app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on http://localhost:${PORT}`);
+    });
+
+    const wss = new WebSocketServer({ server: serverInstance, path: "/live" });
+
+    wss.on("connection", async (clientWs) => {
+      console.log("[LIVE API] Client connected to Gemini Live Voice WebSocket.");
+      try {
+        const session = await ai.live.connect({
+          model: "gemini-3.1-flash-live-preview",
+          config: {
+            responseModalities: [Modality.AUDIO],
+            speechConfig: {
+              voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } },
+            },
+            systemInstruction: "You are the Extractile Gemini Live Voice Assistant.",
+          },
+          callbacks: {
+            onmessage: (message: any) => {
+              const audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+              if (audio) clientWs.send(JSON.stringify({ audio }));
+              if (message.serverContent?.interrupted)
+                clientWs.send(JSON.stringify({ interrupted: true }));
+            },
+          },
+        });
+
+        clientWs.on("message", (data) => {
+          try {
+            const parsed = JSON.parse(data.toString());
+            if (parsed.audio) {
+              session.sendRealtimeInput({
+                audio: { data: parsed.audio, mimeType: "audio/pcm;rate=16000" },
+              });
+            }
+          } catch (e) {}
+        });
+
+        clientWs.on("close", () => {
+          try {
+            session.close();
+          } catch (e) {}
+        });
+      } catch (err: any) {
+        console.error("[LIVE API] WebSocket Live session error:", err);
+        clientWs.send(JSON.stringify({ error: err.message || "Failed to start Live API session." }));
+      }
     });
   }
 

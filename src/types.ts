@@ -1,4 +1,4 @@
-export type ActiveTab = "features" | "quality" | "faq" | "pricing" | "feedback" | "history" | "profile" | "showcase";
+export type ActiveTab = "features" | "quality" | "faq" | "pricing" | "feedback" | "history" | "profile" | "showcase" | "aistudio" | "freeapi";
 
 export interface VideoOption {
   id: string;

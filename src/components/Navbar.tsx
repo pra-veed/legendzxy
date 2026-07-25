@@ -91,6 +91,8 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
 
   const navItems: { id: ActiveTab; label: string }[] = [
     { id: "features", label: "Extractor" },
+    { id: "aistudio", label: "AI Studio" },
+    { id: "freeapi", label: "Free API" },
     { id: "quality", label: "Fidelity" },
     { id: "feedback", label: "Feedback" },
     ...(user ? [{ id: "profile" as const, label: "Profile" }] : []),
