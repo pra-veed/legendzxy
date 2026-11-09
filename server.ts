@@ -1177,7 +1177,10 @@ This is an incredible high-fidelity demonstration of creative development. The v
   if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
     import("vite").then(({ createServer: createViteServer }) => {
       createViteServer({
-        server: { middlewareMode: true },
+        server: {
+          middlewareMode: true,
+          hmr: false,
+        },
         appType: "spa",
       }).then((vite) => {
         app.use(vite.middlewares);
