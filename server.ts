@@ -1180,6 +1180,7 @@ This is an incredible high-fidelity demonstration of creative development. The v
         server: {
           middlewareMode: true,
           hmr: false,
+          ws: false,
         },
         appType: "spa",
       }).then((vite) => {
