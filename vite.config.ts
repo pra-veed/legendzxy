@@ -12,7 +12,7 @@ export default defineConfig(() => {
       },
     },
     build: {
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 4000,
     },
     server: {
       allowedHosts: ['sb-28bb8qn7wylo.vercel.run'],
