@@ -1187,8 +1187,19 @@ This is an incredible high-fidelity demonstration of creative development. The v
         // The proxied preview cannot establish Vite's HMR WebSocket.
         app.get('/@vite/client', (_req, res) => {
           res.type('application/javascript').send(`
-            export function updateStyle() {}
-            export function removeStyle() {}
+            export function updateStyle(id, content) {
+              let style = document.querySelector('style[data-vite-dev-id="' + id + '"]');
+              if (!style) {
+                style = document.createElement('style');
+                style.setAttribute('data-vite-dev-id', id);
+                document.head.appendChild(style);
+              }
+              style.textContent = content;
+            }
+
+            export function removeStyle(id) {
+              document.querySelector('style[data-vite-dev-id="' + id + '"]')?.remove();
+            }
 
             export function createHotContext() {
               return {
