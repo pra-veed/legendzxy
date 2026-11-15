@@ -1185,6 +1185,7 @@ This is an incredible high-fidelity demonstration of creative development. The v
         appType: "spa",
       }).then((vite) => {
         // The proxied preview cannot establish Vite's HMR WebSocket.
+        app.use(express.static(path.join(process.cwd(), 'public'), { index: false }));
         app.get('/@vite/client', (_req, res) => {
           res.type('application/javascript').send(`
             export function updateStyle(id, content) {
