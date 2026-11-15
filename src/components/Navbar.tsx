@@ -114,7 +114,7 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
           className="font-display font-bold text-2xl text-primary tracking-tight cursor-pointer flex items-center select-none hover:opacity-80 transition-opacity"
         >
           <img 
-            src="/favicon.svg" 
+            src="/extractile-mark.png" 
             alt="Extractile Logo" 
             className="w-8 h-8 object-contain mr-4 border border-primary/20 shadow-[1.5px_1.5px_0px_rgba(26,26,26,0.1)] rounded-sm" 
             referrerPolicy="no-referrer"
