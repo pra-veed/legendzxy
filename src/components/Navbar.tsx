@@ -115,7 +115,7 @@ export default function Navbar({ activeTab, setActiveTab, onStartExtracting, onT
           <img 
             src="/extractile-mark.png" 
             alt="Extractile Logo" 
-            className="w-8 h-8 object-contain mr-4 border border-primary/20 shadow-[1.5px_1.5px_0px_rgba(26,26,26,0.1)] rounded-sm" 
+            className="w-8 h-8 object-contain mr-4 brightness-110 border border-primary/20 shadow-[1.5px_1.5px_0px_rgba(26,26,26,0.1)] rounded-sm" 
             referrerPolicy="no-referrer"
           />
           <span className="font-extrabold uppercase tracking-tight text-primary italic no-underline">Extract</span>
