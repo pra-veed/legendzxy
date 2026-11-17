@@ -18,7 +18,6 @@ import {
   ExternalLink,
   Plus,
   ChevronRight,
-  HelpCircle,
   Twitter,
   Linkedin
 } from "lucide-react";
@@ -766,35 +765,6 @@ export default function ShowcaseView({
       <section className="flex flex-col gap-6 border border-primary bg-surface p-6 shadow-[3px_3px_0px_var(--color-primary)] relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-secondary" />
         
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-secondary/10 border border-primary/10 text-secondary">
-              <Sparkles className="w-5 h-5 animate-spin" style={{ animationDuration: '6s' }} />
-            </div>
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-secondary block">
-                EXTRACTILE STUDIO CREATIVE HUB
-              </span>
-              <h1 className="font-serif font-bold text-xl uppercase tracking-tight text-primary leading-tight mt-0.5">
-                The Creative Showcase Board
-              </h1>
-            </div>
-          </div>
-
-          {/* Quick Contact Form Button */}
-          <button
-            type="button"
-            onClick={() => {
-              resetContactForm();
-              setShowContactDrawer(true);
-            }}
-            className="w-full md:w-auto px-4 py-2.5 bg-primary hover:bg-secondary text-on-primary font-mono text-[10px] font-black tracking-widest uppercase rounded-none cursor-pointer flex items-center justify-center gap-2 transition-all shadow-[2px_2px_0px_#1b222c]"
-          >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>REQUEST ENTERPRISE INTEGRATION</span>
-          </button>
-        </div>
-
         {/* Pinterest Style Central Search Bar */}
         <div className="relative w-full">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">

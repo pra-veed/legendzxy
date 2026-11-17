@@ -1912,36 +1912,6 @@ License: Free & Open Archival Copy.
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Feature 1: Showcase Pinboard */}
-                    <div className="bg-rose-500/[0.04] dark:bg-rose-950/10 border border-rose-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-rose-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(244,63,94,0.08)] hover:shadow-[4px_4px_0px_#f43f5e] group">
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <div className="w-9 h-9 bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-500">
-                            <Sparkles className="w-4 h-4 text-rose-500" />
-                          </div>
-                          <span className="text-[8px] font-mono font-bold tracking-widest text-rose-600 dark:text-rose-400 uppercase bg-rose-500/10 px-2 py-0.5 border border-rose-500/25">
-                            CURATED ARCHIVE
-                          </span>
-                        </div>
-                        <div className="space-y-1.5">
-                          <h3 className="font-serif font-bold text-base text-rose-700 dark:text-rose-400">Pinterest Premium Showcase</h3>
-                          <p className="text-xs text-on-surface-variant font-mono leading-relaxed">
-                            Discover the ultimate gallery of upscaled artwork, lossless cover preserves, and digital archives with resolution overlays.
-                          </p>
-                        </div>
-                      </div>
-                      <div className="mt-6 pt-4 border-t border-rose-500/10">
-                        <button
-                          type="button"
-                          onClick={() => setActiveTab?.("showcase")}
-                          className="w-full py-2.5 bg-rose-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider hover:bg-rose-700 cursor-pointer transition-all duration-150 rounded-none shadow-[2px_2px_0px_#9f1239] hover:shadow-none flex items-center justify-center gap-1.5"
-                        >
-                          <span>Explore Showcase Board</span>
-                          <span>→</span>
-                        </button>
-                      </div>
-                    </div>
-
                     {/* Feature 2: Social Broadcast Matrix */}
                     <div className="bg-sky-500/[0.04] dark:bg-sky-950/10 border border-sky-500/20 p-6 rounded-none relative overflow-hidden flex flex-col justify-between hover:border-sky-500 transition-all duration-300 shadow-[4px_4px_0px_rgba(14,165,233,0.08)] hover:shadow-[4px_4px_0px_#0ea5e9] group">
                       <div className="space-y-4">
