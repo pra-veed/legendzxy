@@ -1177,9 +1177,46 @@ This is an incredible high-fidelity demonstration of creative development. The v
   if (process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1") {
     import("vite").then(({ createServer: createViteServer }) => {
       createViteServer({
-        server: { middlewareMode: true },
+        server: {
+          middlewareMode: true,
+          hmr: false,
+          ws: false,
+        },
         appType: "spa",
       }).then((vite) => {
+        // The proxied preview cannot establish Vite's HMR WebSocket.
+        app.use(express.static(path.join(process.cwd(), 'public'), { index: false }));
+        app.get('/@vite/client', (_req, res) => {
+          res.type('application/javascript').send(`
+            export function updateStyle(id, content) {
+              let style = document.querySelector('style[data-vite-dev-id="' + id + '"]');
+              if (!style) {
+                style = document.createElement('style');
+                style.setAttribute('data-vite-dev-id', id);
+                document.head.appendChild(style);
+              }
+              style.textContent = content;
+            }
+
+            export function removeStyle(id) {
+              document.querySelector('style[data-vite-dev-id="' + id + '"]')?.remove();
+            }
+
+            export function createHotContext() {
+              return {
+                data: {},
+                accept() {},
+                dispose() {},
+                prune() {},
+                decline() {},
+                invalidate() {},
+                on() {},
+                off() {},
+                send() {},
+              };
+            }
+          `);
+        });
         app.use(vite.middlewares);
       }).catch((err) => {
         console.error("Vite dev server initialization failed:", err);

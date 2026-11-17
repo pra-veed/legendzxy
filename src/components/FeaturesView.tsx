@@ -91,6 +91,7 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
 
   // Extractor chosen format options
   const [videoFormat, setVideoFormat] = useState<"MP4" | "WEBM" | "MKV" | "MOV" | "MP3">("MP4");
+  const [bulkVideoFormat, setBulkVideoFormat] = useState<"MP4" | "MP3">("MP4");
   const [photoFormat, setPhotoFormat] = useState<"PNG" | "WEBP" | "JPEG">("JPEG");
   const [photoResolution, setPhotoResolution] = useState<"4K" | "2K" | "1080P" | "720P">("4K");
   const [postFormat, setPostFormat] = useState<"PDF" | "TXT" | "JSON" | "MARKDOWN">("PDF");
@@ -974,7 +975,7 @@ export default function FeaturesView({ onOpenWebsite, onTriggerAlert, user, auth
         status: "staged",
         progress: 0,
         extractionMode: extractionMode,
-        videoFormat: videoFormat,
+        videoFormat: bulkVideoFormat,
         photoFormat: photoFormat,
         postFormat: postFormat,
         targetOS: selectedOS,
@@ -1651,6 +1652,20 @@ License: Free & Open Archival Copy.
                       <span className="text-[10px] font-mono text-on-surface-variant/80 uppercase font-semibold">
                         Staging lines: {bulkUrls.split('\n').filter(l => l.trim()).length} target(s)
                       </span>
+                      {extractionMode === "media" && (
+                        <label className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
+                          Video &amp; Audio Format
+                          <select
+                            aria-label="Bulk video and audio format"
+                            value={bulkVideoFormat}
+                            onChange={(e) => setBulkVideoFormat(e.target.value as "MP4" | "MP3")}
+                            className="bg-background text-on-surface border border-outline-variant font-mono text-xs px-3 py-2 focus:border-primary focus:outline-none cursor-pointer rounded-none"
+                          >
+                            <option value="MP4">MP4 Video (.mp4)</option>
+                            <option value="MP3">MP3 Audio (.mp3)</option>
+                          </select>
+                        </label>
+                      )}
                       <button
                         type="submit"
                         className="w-full sm:w-auto px-8 py-3.5 bg-secondary text-on-secondary font-bold text-[11px] tracking-[0.18em] uppercase rounded-none cursor-pointer transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap border border-primary/20 hover:bg-primary hover:text-on-primary"

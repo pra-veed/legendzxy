@@ -12,14 +12,15 @@ export default defineConfig(() => {
       },
     },
     build: {
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 4000,
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
-      // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
-      hmr: process.env.DISABLE_HMR !== 'true',
-      // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
-      watch: process.env.DISABLE_HMR === 'true' ? null : {},
+      allowedHosts: ['sb-28bb8qn7wylo.vercel.run'],
+      // The Vercel preview proxy does not support Vite's dev-server WebSocket.
+      // Disable HMR so the injected Vite client does not repeatedly close sockets.
+      hmr: false,
+      // Keep file watching disabled to prevent agent edits from triggering rebuild loops.
+      watch: null,
     },
   };
 });

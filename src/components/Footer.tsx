@@ -39,7 +39,7 @@ export default function Footer({ setActiveTab, onOpenSupport, onTriggerAlert }: 
           className="font-display font-bold text-lg text-primary hover:opacity-80 transition-opacity cursor-pointer select-none tracking-tight flex items-center"
         >
           <img 
-            src="/favicon.svg" 
+            src="/extractile-mark.png" 
             alt="Extractile Logo" 
             className="w-5 h-5 object-contain mr-3 border border-primary/20 shadow-[1px_1px_0px_rgba(26,26,26,0.1)] rounded-sm" 
             referrerPolicy="no-referrer"
